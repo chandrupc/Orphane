@@ -122,16 +122,16 @@ public class CredentialService {
 		return status;
 	}
 
-	public static boolean requestReset(String email, String password, String authKey) {
+	public static boolean requestReset(String email) {
 		boolean status = false;
 		try {
 			SessionFactory sf = HBUtil.getSessionFactory();
 			Session ses = sf.openSession();
 			ses.beginTransaction();
 			Credential user = ses.get(Credential.class, email);
-			if (user != null) {
-				user.setStatus(UserStatus.NOT_ACTIVATED);
+			if (user != null) {		
 				user.setAuthKey(AUTHIDGen.generateKey(30));
+				user.setPassword(AUTHIDGen.generateKey(10));
 				ses.update(user);
 				status = true;
 			}
@@ -148,13 +148,14 @@ public class CredentialService {
 			Session ses = sf.openSession();
 			ses.beginTransaction();
 			Credential user = ses.get(Credential.class, email);
-			if (user != null && user.getStatus().equals("NOT_ACTIVATED")) {
+			if (user != null && user.getAuthKey().equals(authKey)) {
 				user.setPassword(newPassword);
 				user.setAuthKey("");
 				user.setStatus(UserStatus.ACTIVATED);
 				ses.update(user);
 				ses.getTransaction().commit();
 				ses.close();
+				status = true;				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
