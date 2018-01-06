@@ -22,7 +22,6 @@ public class CredentialService {
 				ses.update(user);
 				ses.getTransaction().commit();
 				ses.close();
-				sf.close();
 				status = true;
 			}
 		} catch (Exception e) {
@@ -43,7 +42,7 @@ public class CredentialService {
 			}
 			ses.getTransaction().commit();
 			ses.close();
-			sf.close();
+			;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -69,7 +68,7 @@ public class CredentialService {
 			ses.save(user);
 			ses.getTransaction().commit();
 			ses.close();
-			sf.close();
+			;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -88,11 +87,10 @@ public class CredentialService {
 						&& authKey.equals(user.getAuthKey())) {
 					user.setStatus(UserStatus.ACTIVATED);
 				}
-				user.setAuthKey("");
+				user.setAuthKey(AUTHIDGen.generateKey(30));
 				ses.update(user);
 				ses.getTransaction().commit();
 				ses.close();
-				sf.close();
 				status = true;
 			}
 		} catch (Exception e) {
@@ -112,6 +110,7 @@ public class CredentialService {
 					&& user.getStatus().equals("ACTIVATED")) {
 				if (user.getAuthKey().isEmpty()) {
 					user.setAuthKey(AUTHIDGen.generateKey(30));
+					status = true;
 				} else {
 					status = true;
 				}
@@ -129,9 +128,10 @@ public class CredentialService {
 			Session ses = sf.openSession();
 			ses.beginTransaction();
 			Credential user = ses.get(Credential.class, email);
-			if (user != null) {		
-				user.setAuthKey(AUTHIDGen.generateKey(30));
-				user.setPassword(AUTHIDGen.generateKey(10));
+			if (user != null) {
+				String key = AUTHIDGen.generateKey(30);
+				user.setAuthKey(key);
+				user.setPassword(key);
 				ses.update(user);
 				status = true;
 			}
@@ -150,16 +150,32 @@ public class CredentialService {
 			Credential user = ses.get(Credential.class, email);
 			if (user != null && user.getAuthKey().equals(authKey)) {
 				user.setPassword(newPassword);
-				user.setAuthKey("");
+				user.setAuthKey(AUTHIDGen.generateKey(30));
 				user.setStatus(UserStatus.ACTIVATED);
 				ses.update(user);
 				ses.getTransaction().commit();
 				ses.close();
-				status = true;				
+				status = true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return status;
+	}
+
+	public static Credential getUser(String email) {
+		Credential user = null;
+		try {
+			SessionFactory sf = HBUtil.getSessionFactory();
+			Session ses = sf.openSession();
+			ses.beginTransaction();
+			user = ses.get(Credential.class, email);
+			if (user != null) {
+				return user;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
 	}
 }

@@ -1,0 +1,593 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Orphange project front end" />
+<meta name="keywords" content="html5, css3, mobile first, responsive" />
+<meta name="author" content="chandru sabari kumar" />
+
+
+<link href="https://fonts.googleapis.com/css?family=Droid+Sans"
+	rel="stylesheet">
+
+<!-- Animate.css -->
+<link rel="stylesheet" href="css/animate.css">
+<!-- Icomoon Icon Fonts-->
+<link rel="stylesheet" href="css/icomoon.css">
+<!-- Themify Icons-->
+<link rel="stylesheet" href="css/themify-icons.css">
+<!-- Bootstrap  -->
+<link rel="stylesheet" href="css/bootstrap.css">
+
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<!-- Magnific Popup -->
+<link rel="stylesheet" href="css/magnific-popup.css">
+
+<!-- Owl Carousel  -->
+<link rel="stylesheet" href="css/owl.carousel.min.css">
+<link rel="stylesheet" href="css/owl.theme.default.min.css">
+
+<!-- Theme style  -->
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Modernizr JS -->
+<script type="text/javascript" src="jscript/link1.js"></script>
+<script type="text/javascript" src="jscript/link2.js"></script>
+<script type="text/javascript" src="jscript/link3.js"></script>
+<script type="text/javascript" src="jscript/link5.js"></script>
+<script type="text/javascript" src="jscript/link6.js"></script>
+<script type="text/javascript" src="jscript/link7.js"></script>
+<script src="js/modernizr-2.6.2.min.js"></script>
+<script type="text/javascript" src="main.js"></script>
+<!-- FOR IE9 below -->
+<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+</head>
+
+<body>
+
+
+	<div id="page">
+		<nav class="gtco-nav" role="navigation">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-sm-2 col-xs-12" data-section="top">
+						<div id="gtco-logo">
+							<a href="#" data-nav-section="top"> <img class="float-left"
+								src="images/logo.png" alt="orphanelogo" title="Orphane"
+								draggable="false">
+							</a>
+						</div>
+					</div>
+					<div class="col-xs-10 align-self-center menu-1 main-nav">
+						<ul class="nav  green justify-content-end">
+							<li class="nav-item"><a class="nav-link" href="#"
+								onclick="login()" id="login">LOGIN</a></li>
+							<li class="nav-item"><a class="nav-link" href="#"
+								data-nav-section="home">Home</a></li>
+							<li class="nav-item"><a class="nav-link" href="#"
+								data-nav-section="how-it-works">How It Works</a></li>
+							<!--<li class="nav-item">
+								<a class="nav-link" href="#" data-nav-section="faq">Fun Facts</a>
+							</li>-->
+							<li class="nav-item"><a class="nav-link" href="#"
+								data-nav-section="products">Gallery</a></li>
+							<li class="nav-item"><a class="nav-link" href="#"
+								data-nav-section="Subscribe">Subscribe</a></li>
+							<li class="nav-item"><a class="nav-link" href="#"
+								data-nav-section="contact">Contact</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div id="gtco-header" data-section="home"
+			class="gtco-cover header-fixed" role="banner"
+			style="background-image: url(images/orpimg1.jpg);">
+			<div class="overlay"></div>
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-12 col-md-offset-0 text-center">
+						<div class="display-t">
+							<div class="display-tc">
+								<h1 class="animate-box" data-animate-effect="fadeIn">
+									<q>Give life for needy Orphans</q>
+								</h1>
+								<h2 class="animate-box" data-animate-effect="fadeIn">A New
+									way of helping</h2>
+								<!--<p class="animate-box" data-animate-effect="fadeIn">
+									<a href="signup.html" class="btn btn-primary btn-lg">SIGN UP</a>								
+								</p>-->
+								<!-- Button trigger modal -->
+								<button type="button" class="btn btn-primary"
+									data-toggle="modal" data-target="#signup">SIGN UP</button>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="signup" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">SIGN UP</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p class="animate-box" data-animate-effect="fadeIn">
+							<a href="signup.html" class="btn btn-primary float-left">ORPHANAGE</a>
+							<a href="signup.html" class="btn btn-primary float-right">REGULAR
+								USER</a>
+						</p>
+						<!-- <button type="button" class="btn btn-primary float-left" data-dismiss="modal">ORPHANAGE</button>
+                        <button type="button" class="btn btn-primary float-right">REGULAR USER</button>-->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- <div id="gtco-features" class="border-bottom" data-section="features">
+		<div class="gtco-container">
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+					<h2>Usable Features</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3 col-sm-6">
+					<div class="feature-center">
+						<span class="icon">
+							<i class="ti-vector"></i>
+						</span>
+						<h3>Pixel Perfect</h3>
+						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. </p>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-6">
+					<div class="feature-center">
+						<span class="icon">
+							<i class="ti-tablet"></i>
+						</span>
+						<h3>Fully Responsive</h3>
+						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. </p>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-6">
+					<div class="feature-center">
+						<span class="icon">
+							<i class="ti-settings"></i>
+						</span>
+						<h3>Web Development</h3>
+						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. </p>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-6">
+					<div class="feature-center">
+						<span class="icon">
+							<i class="ti-ruler-pencil"></i>
+						</span>
+						<h3>Web Design</h3>
+						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. </p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 col-sm-6">
+					<div class="feature-center">
+						<span class="icon">
+							<i class="ti-ticket"></i>
+						</span>
+						<h3>Use Our Coupons</h3>
+						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. </p>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6">
+					<div class="feature-center">
+						<span class="icon">
+							<i class="ti-shield"></i>
+						</span>
+						<h3>High Level Security</h3>
+						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. </p>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6">
+					<div class="feature-center">
+						<span class="icon">
+							<i class="ti-gift"></i>
+						</span>
+						<h3>100% Free Download</h3>
+						<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. </p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+
+		<div class="gtco-section border-bottom" id="how-it-works"
+			data-section="how-it-works">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-6">
+
+						<div class="gtco-heading">
+							<h2 class="gtco-left">How It Works</h2>
+							<p>Orphane is the interface between orphanages and donar. It
+								is a tool to help the donar to find the orphanages.</p>
+						</div>
+
+						<div class="row">
+
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon"> <i class="icon-check"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>Orphanages</h3>
+										<p>Orphanages will post their needs.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon"> <i class="icon-check"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>Donor</h3>
+										<p>Donor will get the orphanages needs, and they can
+											respond to them. They can donate the monthly fund.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon"> <i class="icon-check"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>Subscribers</h3>
+										<p>Subscribers will get important notifications from
+											orphanages. They can respond to them.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="feature-left">
+									<span class="icon"> <i class="icon-check"></i>
+									</span>
+									<div class="feature-copy">
+										<h3>Orphane support</h3>
+										<p>We support you to make the interface ease and
+											protective.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 animate-box" data-animate-effect="fadeInRight">
+						<img src="images/noneed2.gif" alt="Free HTML5 Bootstrap Template"
+							class="img-responsive">
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<!-- <div class="gtco-section" id="gtco-faq" data-section="faq">
+		<div class="gtco-container">
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+					<h2>Frequently Ask Questions</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+
+					<div class="gtco-accordion">
+						<div class="gtco-accordion-heading">
+							<div class="icon"><i class="icon-cross"></i></div>
+							<h3>What is Usable?</h3>
+						</div>
+						<div class="gtco-accordion-content">
+							<div class="inner">
+								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							</div>
+						</div>
+					</div>
+					<div class="gtco-accordion">
+						<div class="gtco-accordion-heading">
+							<div class="icon"><i class="icon-cross"></i></div>
+							<h3>I have technical problem, who do I email?</h3>
+						</div>
+						<div class="gtco-accordion-content">
+							<div class="inner">
+								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							</div>
+						</div>
+					</div>
+					<div class="gtco-accordion">
+						<div class="gtco-accordion-heading">
+							<div class="icon"><i class="icon-cross"></i></div>
+							<h3>How do I use Usable features?</h3>
+						</div>
+						<div class="gtco-accordion-content">
+							<div class="inner">
+								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							</div>
+						</div>
+					</div> 
+
+				</div>
+				<div class="col-md-6">
+
+					<div class="gtco-accordion">
+						<div class="gtco-accordion-heading">
+							<div class="icon"><i class="icon-cross"></i></div>
+							<h3>What language are available?</h3>
+						</div>
+						<div class="gtco-accordion-content">
+							<div class="inner">
+								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							</div>
+						</div>
+					</div>
+					<div class="gtco-accordion">
+						<div class="gtco-accordion-heading">
+							<div class="icon"><i class="icon-cross"></i></div>
+							<h3>Can I have a username that is already taken?</h3>
+						</div>
+						<div class="gtco-accordion-content">
+							<div class="inner">
+								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							</div>
+						</div>
+					</div>
+					<div class="gtco-accordion">
+						<div class="gtco-accordion-heading">
+							<div class="icon"><i class="icon-cross"></i></div>
+							<h3>Is Usable free?</h3>
+						</div>
+						<div class="gtco-accordion-content">
+							<div class="inner">
+								<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div> 
+
+
+		<div id="gtco-counter" class="gtco-section" data-section="faq">
+			<div class="gtco-container">
+
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+						<h2>Orphane Facts</h2>
+						<p>More Users gives More kindness</p>
+					</div>
+				</div>
+
+				<div class="row">
+
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-download"></i>
+							</span>
+							<span class="counter js-counter" data-from="0" data-to="2122070" data-speed="5000" data-refresh-interval="50">1</span>
+							<span class="counter-label">Users</span>
+
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-face-smile"></i>
+							</span>
+							<span class="counter js-counter" data-from="0" data-to="402002" data-speed="5000" data-refresh-interval="50">1</span>
+							<span class="counter-label">Orphanages</span>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-briefcase"></i>
+							</span>
+							<span class="counter js-counter" data-from="0" data-to="402" data-speed="5000" data-refresh-interval="50">1</span>
+							<span class="counter-label">Subscribers</span>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-time"></i>
+							</span>
+							<span class="counter js-counter" data-from="0" data-to="212023" data-speed="5000" data-refresh-interval="50">1</span>
+							<span class="counter-label">Website Visitors</span>
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>-->
+
+		<div id="gtco-products" data-section="products">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+						<h2>Gallery</h2>
+					</div>
+				</div>
+				<div class="row">
+					<div class="owl-carousel owl-carousel-carousel">
+						<div class="item">
+							<img src="images/gal1.jpg" alt="image 1">
+						</div>
+						<div class="item">
+							<img src="images/gal2.jpg" alt="image 2">
+						</div>
+						<div class="item">
+							<img src="images/gal4.jpg" alt="image 3">
+						</div>
+						<div class="item">
+							<img src="images/gal5.jpg" alt="image 4">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div id="gtco-subscribe" data-section="Subscribe">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+						<h2>Subscribe</h2>
+						<p>Be the first to know about our needs</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<form class="form-inline">
+							<div class="col-md-4 col-sm-4">
+								<div class="form-group">
+									<label for="name" class="sr-only">Name</label> <input
+										type="text" class="form-control" id="name"
+										placeholder="Your Name">
+								</div>
+							</div>
+							<div class="col-md-4 col-sm-4">
+								<div class="form-group">
+									<label for="email" class="sr-only">Email</label> <input
+										type="email" class="form-control" id="email"
+										placeholder="Your Email">
+								</div>
+							</div>
+							<div class="col-md-4 col-sm-4">
+								<button type="submit" class="btn btn-danger btn-block">Subscribe</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="gtco-contact" data-section="contact"
+			class="gtco-cover gtco-cover-xs"
+			style="background-image: url(images/img_bg_3.jpg);">
+			<div class="overlay"></div>
+			<div class="gtco-container">
+				<div class="row text-center">
+					<div class="display-t">
+						<div class="display-tc">
+							<div class="col-md-12">
+								<h1 id="query">
+									If you have any queries please email us at <a href="#">helpwithorphane@gmail.com</a>
+								</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<footer id="gtco-footer" role="contentinfo">
+			<div class="gtco-container">
+				<div class="row row-pb-md">
+
+					<div class="col-md-6">
+						<div class="gtco-widget">
+							<h3>About Us</h3>
+							<p>Orphane team made a bridge between the donors and
+								orphanages. We satisfy the orphange needs by the people's
+								support. We decreases the distance of helping. we are the
+								college students, and designed orphane to enrich the humanity
+								over the people.</p>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="gtco-widget pull-right">
+							<h3>Get In Touch</h3>
+							<ul class="gtco-quick-contact">
+								<li><a href="#"> <i class="icon-phone"></i>+91-962-938-2972
+								</a></li>
+								<li><a href="#"> <i class="icon-mail2"></i>helpwithorphane@gmail.com
+								</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="row copyright">
+					<div class="col-md-12">
+						<p class="pull-left">
+							<small class="block">&copy; 2017 Orphane. All Rights
+								Reserved.</small> <small class="block">Designed by</small> <span
+								class="heading"> Orphane Team</span>
+						</p>
+						<p class="pull-right">
+						<ul class="gtco-social-icons pull-right">
+							<li><a href="#"> <i class="icon-twitter"></i>
+							</a></li>
+							<li><a href="#"> <i class="icon-facebook"></i>
+							</a></li>
+						</ul>
+
+					</div>
+				</div>
+
+			</div>
+		</footer>
+	</div>
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"> <i class="icon-arrow-up"></i>
+		</a>
+	</div>
+
+	<!-- jQuery -->
+	<script src="js/jquery.min.js"></script>
+	<!-- jQuery Easing -->
+	<script src="js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script src="jscript/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script src="js/jquery.waypoints.min.js"></script>
+	<!-- Carousel -->
+	<script src="js/owl.carousel.min.js"></script>
+	<!-- countTo -->
+	<script src="js/jquery.countTo.js"></script>
+	<!-- Magnific Popup -->
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/magnific-popup-options.js"></script>
+	<!-- Main -->
+	<script src="js/main.js"></script>
+
+</body>
+
+</html>

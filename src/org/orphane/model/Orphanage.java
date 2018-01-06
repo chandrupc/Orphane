@@ -22,7 +22,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "orp_orphanage", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "ph_num", name = "orp_orphanage_ph_num_unq"),
 		@UniqueConstraint(columnNames = "alt_ph_num", name = "orp_orphanage_alt_ph_num_unq"),
-		@UniqueConstraint(columnNames = { "house_no", "street_name", "area_name", "city", "state",
+		@UniqueConstraint(columnNames = { "address", "city", "state",
 				"pincode" }, name = "orp_orphanage_address_unq") }, catalog = "orphane")
 @AttributeOverrides({
 		@AttributeOverride(name = "name", column = @Column(name = "orphanage_name", length = 50, nullable = false)),
@@ -43,6 +43,10 @@ public class Orphanage extends Details {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "orp_mapping_table", joinColumns = @JoinColumn(name = "orp_id", foreignKey = @ForeignKey(name = "orp_mapping_table_orp_id_fk")), inverseJoinColumns = @JoinColumn(name = "trustee_id", foreignKey = @ForeignKey(name = "orp_mapping_table_trustee_id_fk")))
 	public List<Trustee> trustee;
+	
+	@OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@JoinColumn(name = "email_id",foreignKey = @ForeignKey(name = "orp_orphanage_email_id_fk"))
+	public Credential credential;
 
 	public String getWebsite() {
 		return website;

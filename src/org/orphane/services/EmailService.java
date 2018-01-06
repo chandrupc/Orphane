@@ -20,8 +20,8 @@ public static void send(String to, String subject, String body) {
     Properties props = System.getProperties();
     props.put("mail.smtp.starttls.enable", true);
     props.put("mail.smtp.host", "smtp.gmail.com");
-    props.put("mail.smtp.user", "chandruadi5@gmail.com");
-    props.put("mail.smtp.password", "ChanASDFDru7799");
+    props.put("mail.smtp.user", "helpwithorphanea@gmail.com");
+    props.put("mail.smtp.password", "orphanage");
     props.put("mail.smtp.port", "587");
     props.put("mail.smtp.auth", true);
     props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
@@ -32,7 +32,7 @@ public static void send(String to, String subject, String body) {
     System.out.println("Port: "+session.getProperty("mail.smtp.port"));
 
     try {
-        InternetAddress from = new InternetAddress("chandruadi5@gmail.com");
+        InternetAddress from = new InternetAddress("helpwithorphane@gmail.com");
         message.setSubject(subject);
         message.setFrom(from);
         message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
@@ -53,7 +53,7 @@ public static void send(String to, String subject, String body) {
         message.setContent(multipart);
 
         Transport transport = session.getTransport("smtp");
-        transport.connect("smtp.gmail.com", "chandruadi5@gmail.com", "ChanASDFDru7799");
+        transport.connect("smtp.gmail.com", "helpwithorphane@gmail.com", "orphanage");
         System.out.println("Transport: "+transport.toString());
         transport.sendMessage(message, message.getAllRecipients());
 

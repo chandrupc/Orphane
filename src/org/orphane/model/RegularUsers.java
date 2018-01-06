@@ -18,7 +18,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "orp_reg_user", catalog = "orphane", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "ph_num", name = "orp_reg_user_ph_num_unq"),
 		@UniqueConstraint(columnNames = "alt_ph_num", name = "orp_reg_user_alt_ph_num_unq"),
-		@UniqueConstraint(columnNames = { "house_no", "street_name", "area_name", "city", "state",
+		@UniqueConstraint(columnNames = { "address", "city", "state",
 				"pincode" }, name = "orp_reg_user_address_unq") })
 @AttributeOverrides({
 		@AttributeOverride(name = "name", column = @Column(name = "first_name", nullable = false, length = 30)),
@@ -45,6 +45,10 @@ public class RegularUsers extends Details {
 		return lastName;
 	}
 
+	@OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@JoinColumn(name = "email_id",foreignKey = @ForeignKey(name = "orp_reg_user_email_id_fk"))
+	public Credential credential;
+	
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
