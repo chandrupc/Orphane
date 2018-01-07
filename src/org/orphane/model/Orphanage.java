@@ -43,9 +43,9 @@ public class Orphanage extends Details {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "orp_mapping_table", joinColumns = @JoinColumn(name = "orp_id", foreignKey = @ForeignKey(name = "orp_mapping_table_orp_id_fk")), inverseJoinColumns = @JoinColumn(name = "trustee_id", foreignKey = @ForeignKey(name = "orp_mapping_table_trustee_id_fk")))
 	public List<Trustee> trustee;
-	
-	@OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	@JoinColumn(name = "email_id",foreignKey = @ForeignKey(name = "orp_orphanage_email_id_fk"))
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "email_id", foreignKey = @ForeignKey(name = "orp_orphanage_email_id_fk"))
 	public Credential credential;
 
 	public String getWebsite() {
@@ -78,6 +78,20 @@ public class Orphanage extends Details {
 
 	public void setTrustee(List<Trustee> trustee) {
 		this.trustee = trustee;
+	}
+
+	public Credential getCredential() {
+		return credential;
+	}
+
+	public void setCredential(Credential credential) {
+		this.credential = credential;
+	}
+
+	@Override
+	public String toString() {
+		return "Orphanage [website=" + website + ", address=" + address + ", fileDetails=" + fileDetails + ", trustee="
+				+ trustee + ", credential=" + credential + "]";
 	}
 
 }

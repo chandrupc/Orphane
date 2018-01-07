@@ -42,7 +42,6 @@ public class CredentialService {
 			}
 			ses.getTransaction().commit();
 			ses.close();
-			;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
