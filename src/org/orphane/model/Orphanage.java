@@ -22,7 +22,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "orp_orphanage", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "ph_num", name = "orp_orphanage_ph_num_unq"),
 		@UniqueConstraint(columnNames = "alt_ph_num", name = "orp_orphanage_alt_ph_num_unq"),
-		@UniqueConstraint(columnNames = { "address", "city", "state",
+		@UniqueConstraint(columnNames = { "address", "city", "state_name",
 				"pincode" }, name = "orp_orphanage_address_unq") }, catalog = "orphane")
 @AttributeOverrides({
 		@AttributeOverride(name = "name", column = @Column(name = "orphanage_name", length = 50, nullable = false)),

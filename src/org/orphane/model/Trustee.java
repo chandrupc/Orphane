@@ -18,7 +18,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "orp_trustee", catalog = "orphane", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "ph_num", name = "orp_trustee_ph_num_unq"),
 		@UniqueConstraint(columnNames = "alt_ph_num", name = "orp_trustee_alt_ph_num_unq"),
-		@UniqueConstraint(columnNames = { "address", "city", "state",
+		@UniqueConstraint(columnNames = { "address", "city", "state_name",
 				"pincode" }, name = "orp_trustee_address_unq") })
 @AttributeOverrides({
 		@AttributeOverride(name = "name", column = @Column(name = "first_name", nullable = false, length = 30)),

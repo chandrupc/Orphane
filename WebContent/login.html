@@ -2,45 +2,50 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-    <meta name="description" content="Orphange login page" />
-    <meta name="keywords" content="html5, css3, mobile first, responsive" />
-    <meta name="author" content="chandru sabari kumar" />
-    <title>Login Form</title>
-    <link rel="stylesheet" type="text/css" href="css/login.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-    <script type="text/javascript" src="main.js"></script>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="description" content="Orphange login page" />
+<meta name="keywords" content="html5, css3, mobile first, responsive" />
+<meta name="author" content="chandru sabari kumar" />
+<title>Login Form</title>
+<link rel="stylesheet" type="text/css" href="css/login.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+<script type="text/javascript" src="main.js"></script>
 
 </head>
 
 <body>
-    <div class="container-fluid layer">
-        <form class="form-group top-padding" action="index.html" method="post" onsubmit="return validateLogin()">
-            <div class="col-10 offset-1 col-sm-5 offset-sm-3 col-md-6 offset-md-3 justify-content-center">
-                <div class="heading text-center">
-                    ORP
-                    <span>PHANE</span>
-                </div>
-                <div id="user-emailId">
-                    <label for="user-email">Email</label>
-                    <input type="text" onkeyup="clearError('username-error')" class="form-control" id="user-email" placeholder="enter email" name="email">
-                    <span id="username-error"></span>
-                </div>
-                <div id="user-pass" class="line-spacing">
-                    <label for="user-password">Password</label>
-                    <input type="password" onkeyup="clearError('password-error')" class="form-control" id="user-password" placeholder="enter password here" name="password">
-                    <span id="password-error"></span>
-                </div>
-                <div id="forgot-pass">
-                    <a href="#">FORGOT PASSWORD?</a>
-                </div>
-                <div class="line-spacing text-center">
-                    <button style="cursor : pointer" class="btn btn-success" type="submit">LOGIN</button>
-                </div>
-            </div>
-        </form>
-    </div>
+	<div class="container-fluid layer">
+		<form class="form-group top-padding" action="index.html"
+			onsubmit="return validateLogin()" method="post">
+			<div
+				class="col-10 offset-1 col-sm-5 offset-sm-3 col-md-6 offset-md-3 justify-content-center">
+				<div class="heading text-center">
+					ORP <span>PHANE</span>
+				</div>
+				<div id="user-emailId">
+					<label for="user-email">Email</label> <input type="text"
+						onkeyup="clearError('username-error')" class="form-control"
+						id="user-email" placeholder="enter email" name="email"> <span
+						id="username-error"></span>
+				</div>
+				<div id="user-pass" class="line-spacing">
+					<label for="user-password">Pass</label> <input type="password"
+						onkeyup="clearError('password-error')" class="form-control"
+						id="user-password" placeholder="enter password here"
+						name="password"> <span id="password-error"></span>
+				</div>
+				<div id="forgot-pass">
+					<a href="#">FORGOT PASSWORD?</a>
+				</div>
+				<div class="line-spacing text-center">
+					<button style="cursor: pointer" class="btn btn-success"
+						type="submit">LOGIN</button>
+				</div>
+			</div>
+		</form>
+	</div>
 
 </body>

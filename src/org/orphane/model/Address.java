@@ -12,7 +12,7 @@ public class Address {
 	@Column(name = "city", length = 50, nullable = false)
 	public String city;
 
-	@Column(name = "state", length = 50, nullable = false)
+	@Column(name = "state_name", length = 50, nullable = false)
 	public String state;
 
 	@Column(name = "pincode", nullable = false)

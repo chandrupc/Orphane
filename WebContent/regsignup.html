@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>SIGN UP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Orphange project front end" />
+<meta name="keywords" content="html5, css3, mobile first, responsive" />
+<meta name="author" content="chandru sabari kumar" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="css/signup.css" />
+<script src="main.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+	<div class="container">
+
+		<div class="text-center">
+			<h1 class="heading">REGULAR USER SIGN UP</h1>
+		</div>
+		<br>
+		<div class="col-lg-12 well top">
+			<div class="row">
+
+				<div class="col-sm-6 form-group">
+					<p>* Fields are Mandatory</p>
+				</div>
+
+				<form action="index.html" method="post"
+					onsubmit="return regCheckDetails()">
+
+					<div class="row">
+						<div class="col-sm-6 form-group">
+							<label>First Name</label> <input
+								onfocus="clearError('fname-error')"
+								onkeyup="firstNameLength('firstName','fname-error')"
+								id="firstName" type="text" placeholder="*Enter First Name Here"
+								class="form-control"> <span id="fname-error"></span>
+						</div>
+						<br>
+						<div class="col-sm-6 form-group">
+							<label>Last Name</label> <input
+								onfocus="clearError('lname-error')"
+								onkeyup="lastNameLength('lastName','lname-error')" id="lastName"
+								type="text" placeholder="*Enter Last Name Here"
+								class="form-control"> <span id="lname-error"></span>
+						</div>
+
+						<div class="well form-group top col-12">
+							<label>*Date Of Birth</label> <input id="dateOfBirth" type="date"
+								class="form-control" id="exampleInputDOB1" required>
+						</div>
+					</div>
+					<div class="row top">
+						<div class="col-sm-6 form-group">
+							<label>Phone Number</label> <input id="phoneNumber"
+								onfocus="clearError('number-error')" type="text"
+								placeholder="*Enter Phone Number" class="form-control">
+							<span id="number-error"></span>
+						</div>
+						<br>
+						<div class="col-sm-6 form-group">
+							<label>Alternate Number</label> <input id="altNumber"
+								onfocus="clearError('altnum-error')" type="text"
+								placeholder="Enter Alternate Here" class="form-control">
+							<span id="altnum-error"></span>
+						</div>
+					</div>
+					<div class="form-group top">
+						<label>Address</label>
+						<textarea id="address" onfocus="clearError('address-error')"
+							onkeyup="addressLength('address','address-error')"
+							placeholder="*Enter Address Here" rows="3" class="form-control"
+							style="resize: none"></textarea>
+						<span id="address-error"></span>
+					</div>
+					<div class="row">
+						<div class="col-sm-4 form-group">
+							<label>City</label> <input id="city"
+								onfocus="clearError('city-error')"
+								onkeyup="cityLength('city','city-error')" type="text"
+								placeholder="*Enter City Name Here" class="form-control">
+							<span id="city-error"></span>
+						</div>
+						<div class="col-sm-4 form-group">
+							<label>State</label> <input id="state"
+								onfocus="clearError('state-error')"
+								onkeyup="stateLength('state','state-error')" type="text"
+								placeholder="*Enter State Name Here" class="form-control">
+							<span id="state-error"></span>
+						</div>
+						<div class="col-sm-4 form-group">
+							<label>Zip</label> <input id="zip"
+								onfocus="clearError('zip-error')" type="text"
+								placeholder="*Enter Zip Code Here" class="form-control">
+							<span id="zip-error"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label>Email Address</label> <input id="emailId"
+							onfocus="clearError('email-error')" type="text"
+							placeholder="*Enter Email Address Here" class="form-control">
+						<span id="email-error"></span>
+					</div>
+					<div class="row top">
+						<div class="form-group col-sm-6">
+							<label>Password</label> <input id="pass"
+								onkeypress="clearError('checkpass-error')"
+								onfocus="clearError('pass-error')" type="password"
+								placeholder="*Enter Password" class="form-control"> <span
+								id="pass-error"></span>
+						</div>
+						<div class="form-group col-sm-6">
+							<label>Retype Password</label> <input id="checkPass"
+								onkeypress="clearError('pass-error')"
+								onfocus="clearError('checkpass-error')" type="password"
+								placeholder="*Re-enter Password" class="form-control"> <span
+								id="checkpass-error"></span>
+						</div>
+					</div>
+					<div class="text-center" style="padding-top: 50px">
+						<button class="btn btn-lg btn-success" type="submit">Submit</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

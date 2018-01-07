@@ -1,11 +1,16 @@
 var userError = [ "Enter a valid email-id", "Enter a valid first-name",
-		"Enter a valid last-name" ];
+		"Enter a valid last-name",
+		"email-id doesnot exists please sign up to login",
+		"account not activated", "enter a valid orphanage name" ];
 var passError = [ "Password cannot be empty", "Please enter the password",
 		"Password mismatch", "Minimum 8 characters" ];
 var phoneNumberError = [ "Please enter a 10 digit valid mobile number",
 		"Alternate number is same as primary" ];
 var addressError = [ "Please fill out the address", "Please enter valid city",
 		"Please enter valid state name", " Please enter valid zipcode" ];
+var lengthError = [ "Maximum 30 characters", "Maximum 255 characters",
+		"Maximum 50 characters" ];
+var websiteError = [ "please enter a valid website" ]
 
 var nameReg = /^[a-zA-Z]+$/;
 var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -13,6 +18,7 @@ var phoneRegex = /^[0-9]{10}$/;
 var addRegex = /^[0-9a-z A-Z-,'/ / ]+$/;
 var zipRegex = /^[0-9]{6}$/;
 var stateReg = /^[a-zA-Z ]*$/;
+var webReg = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
 
 function login() {
 	location.href = "login.html";
@@ -41,12 +47,35 @@ function validateLogin() {
 			"password-error", passError, 1)
 			: status = false;
 	if (checkEmail(username) && checkField(password)) {
-		status = true;
+		var ajax;
+		if (XMLHttpRequest) {
+			ajax = new XMLHttpRequest();
+		} else {
+			ajax = new ActiveXobject("Microsoft.XMLHTTP");
+		}
+		ajax.open("post", "login");
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		ajax.onreadystatechange = function() {
+			if (this.readyState === 4 && this.status === 200) {
+				if (this.responseText === "invalid user") {
+					dispError("username-error", userError, 3);
+					status = false;
+				} else if (this.responseText === "account not activated") {
+					dispErrot("username-error", userError, 4);
+					status = false;
+				} else if (this.responseText === "success") {
+					status = true;
+				}
+
+			}
+		}
+		ajax.send("email=" + username + "&pass=" + password);
 	}
-	return status;
+	return false;
 }
 
-function checkDetails() {
+function regCheckDetails() {
 	var firstName = getValue("firstName");
 	var lastName = getValue("lastName");
 	var phoneNumber = getValue("phoneNumber");
@@ -79,10 +108,10 @@ function checkDetails() {
 	}
 	(checkAddress(address) === false) ? dispError("address-error",
 			addressError, 0) : count++;
-	(checkState(city) === false) ? dispError("city-error", addressError, 1)
-			: count++;
-	console.log(checkState(state));
-	(checkState(state) === false) ? dispError("state-error", addressError, 2)
+	(checkState(city) === false || city === "" || city === null) ? dispError(
+			"city-error", addressError, 1) : count++;
+	(checkState(state) === false || state === "" || state === null) ? dispError(
+			"state-error", addressError, 2)
 			: count++;
 	(checkZip(zip) === false) ? dispError("zip-error", addressError, 3)
 			: count++;
@@ -108,6 +137,74 @@ function checkDetails() {
 
 }
 
+function orpCheckDetails() {
+	var status = false;
+	var flag = 0;
+	var count = 0;
+	var orpName = getValue("orpName");
+	var orpPh = getValue("orpPhoneNumber");
+	var orpAltNum = getValue("orpAltNumber");
+	var orpAdd = getValue("orpAddress");
+	var orpCity = getValue("orpCity");
+	var orpState = getValue("orpState");
+	var orpZip = getValue("orpZip");
+	var orpWebsite = getValue("orpWebsite");
+	var orpEmailId = getValue("orpEmailId");
+	var orpPass = getValue("orpPass");
+	var orpCheckPass = getValue("orpCheckPass");
+	(checkState(orpName) === false || orpName === "" || orpName === null) ? dispError(
+			"orpname-error", userError, 5)
+			: count++;
+	(checkPhoneNumber(orpPh) === false) ? dispError("orpnumber-error",
+			phoneNumberError, 0) : count++;
+	if (orpAltNum !== null && orpAltNum !== "") {
+		(checkPhoneNumber(orpAltNum) === false) ? dispError("orpaltnum-error",
+				phoneNumberError, 0) : flag = 1;
+		count++;
+	}
+	if (orpPh === orpAltNum && (orpPh !== "" && orpPh !== null)
+			&& (orpAltNum !== "" && orpAltNum !== null)) {
+		dispError("orpnumber-error", phoneNumberError, 1);
+		dispError("orpaltnum-error", phoneNumberError, 1);
+	}
+	(checkAddress(orpAdd) === false) ? dispError("orpaddress-error",
+			addressError, 0) : count++;
+	(checkState(orpCity) === false || orpCity === "" || orpCity === null) ? dispError(
+			"orpcity-error", addressError, 1)
+			: count++;
+	(checkState(orpState) === false || orpState === "" || orpState === null) ? dispError(
+			"orpstate-error", addressError, 2)
+			: count++;
+	(checkZip(orpZip) === false) ? dispError("orpzip-error", addressError, 3)
+			: count++;
+	if (orpWebsite !== "" && orpWebsite !== null) {
+		(checkWebsite(orpWebsite) === false) ? dispError("orpwebsite-error",
+				websiteError, 0) : count++;
+	}
+	(checkEmail(orpEmailId) === false) ? dispError("orpemail-error", userError,
+			0) : count++;
+	(checkField(orpPass) === false) ? dispError("orppass-error", passError, 0)
+			: count++;
+	(checkField(orpCheckPass) === false) ? dispError("orpcheckpass-error",
+			passError, 0) : count++;
+	(checkPasswordLength(orpPass) === false) ? dispError("orppass-error",
+			passError, 3) : count++;
+	if (checkField(orpPass) && checkField(orpCheckPass)
+			&& orpPass !== orpCheckPass) {
+		dispError("orppass-error", passError, 2);
+		dispError("orpcheckpass-error", passError, 2);
+		count -= 2;
+	} else {
+		count++;
+	}
+	//console.log(flag + " " + count);
+	if ((count === 13 && flag === 1) || (count === 12 && flag === 1)
+			|| (flag === 0 && count === 12) || (count === 11 && flag === 0)) {
+		status = true;
+	}
+	return status;
+}
+
 function checkState(state) {
 	return stateReg.test(state);
 }
@@ -122,6 +219,10 @@ function checkPhoneNumber(no) {
 
 function checkName(name) {
 	return nameReg.test(name);
+}
+
+function checkWebsite(website) {
+	return webReg.test(website);
 }
 
 function checkAddress(address) {
@@ -174,6 +275,17 @@ function clearError(idName) {
 	case "email-error":
 	case "pass-error":
 	case "checkpass-error":
+	case "orpname-error":
+	case "orpnumber-error":
+	case "orpaltnum-error":
+	case "orpaddress-error":
+	case "orpcity-error":
+	case "orpstate-error":
+	case "orpzip-error":
+	case "orpemail-error":
+	case "orppass-error":
+	case "orpcheckpass-error":
+	case "orpwebsite-error":
 		document.getElementById(idName).innerHTML = "";
 		break;
 	}
@@ -181,66 +293,62 @@ function clearError(idName) {
 
 /* onkeyup functions */
 
-function validatePhoneNumber() {
-	var x = document.getElementById("phoneNumber");
-	if (!(/^[0-9]+$/.test(x.value))) {
-		x.value = x.value.slice(0, x.value.length - 1);
-	}
-}
-
-function validateAlternatePhoneNumber() {
-	var x = document.getElementById("altNumber");
-	if (!(/^[0-9]+$/.test(x.value))) {
-		x.value = x.value.slice(0, x.value.length - 1);
-	}
-}
-
-function firstNameLength() {
-	var x = document.getElementById('firstName');
-	if (x.value.length > 30) {
-		x.value = x.value.slice(0, x.value.length - 1);
-		document.getElementById('fname-error').innerHTML = 'Maximum 30 Characters';
+function orpNameLength(idName, errorTag) {
+	var x = getValue(idName);
+	if (x.length > 50) {
+		x = x.slice(0, x.length - 1);
+		dispError(errorTag, lengthError, 0);
 	} else {
-		document.getElementById('fname-error').innerHTML = '';
+		document.getElementById(errorTag).innerHTML = '';
 	}
 }
 
-function lastNameLength() {
-	var x = document.getElementById('lastName');
-	if (x.value.length > 30) {
-		x.value = x.value.slice(0, x.value.length - 1);
-		document.getElementById('lname-error').innerHTML = 'Maximum 30 Characters';
+function firstNameLength(idName, errorTag) {
+	var x = getValue(idName);
+	if (x.length > 30) {
+		x = x.slice(0, x.length - 1);
+		dispError(errorTag, lengthError, 0);
 	} else {
-		document.getElementById('lname-error').innerHTML = '';
+		document.getElementById(errorTag).innerHTML = '';
 	}
 }
 
-function addressLength() {
-	var x = document.getElementById('address');
-	if (x.value.length > 255) {
-		x.value = x.value.slice(0, x.value.length - 1);
-		document.getElementById('address-error').innerHTML = 'Maximum 255 Characters';
+function lastNameLength(idName, errorTag) {
+	var x = getValue(idName);
+	if (x.length > 30) {
+		x = x.slice(0, x.length - 1);
+		dispError(errorTag, lengthError, 0);
 	} else {
-		document.getElementById('address-error').innerHTML = '';
+		document.getElementById(errorTag).innerHTML = '';
 	}
 }
 
-function cityLength() {
-	var x = document.getElementById('city');
-	if (x.value.length > 15) {
-		x.value = x.value.slice(0, x.value.length - 1);
-		document.getElementById('city-error').innerHTML = 'Maximum 15 Characters';
+function addressLength(idName, errorTag) {
+	var x = getValue(idName);
+	if (x.length > 255) {
+		x = x.slice(0, x.length - 1);
+		dispError(errorTag, lengthError, 1);
 	} else {
-		document.getElementById('city-error').innerHTML = '';
+		document.getElementById(errorTag).innerHTML = '';
 	}
 }
 
-function stateLength() {
-	var x = document.getElementById('state');
-	if (x.value.length > 15) {
-		x.value = x.value.slice(0, x.value.length - 1);
-		document.getElementById('state-error').innerHTML = 'Maximum 15 Characters';
+function cityLength(idName, errorTag) {
+	var x = getValue(idName);
+	if (x.length > 50) {
+		x = x.slice(0, x.length - 1);
+		dispError(errorTag, lengthError, 2);
 	} else {
-		document.getElementById('state-error').innerHTML = '';
+		document.getElementById(errorTag).innerHTML = '';
+	}
+}
+
+function stateLength(idName, errorTag) {
+	var x = getValue(idName);
+	if (x.length > 50) {
+		x = x.slice(0, x.length - 1);
+		dispError(errorTag, lengthError, 2);
+	} else {
+		document.getElementById(errorTag).innerHTML = '';
 	}
 }
