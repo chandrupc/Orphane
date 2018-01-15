@@ -29,8 +29,8 @@
 					<p>* Fields are Mandatory</p>
 				</div>
 
-				<form action="index.html" method="post"
-					onsubmit="return orpCheckDetails()">
+				<form action="" method="post"
+					onsubmit="return orpCheckDetails('false')">
 
 					<div class="row">
 						<div class="col-sm-12 form-group">
@@ -88,14 +88,14 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label>Website</label> <input id="orpWebsite"
+						<label>ORPHANAGE SITE</label> <input id="orpWebsite"
 							onfocus="clearError('orpwebsite-error')" type="text"
 							placeholder="Enter Website URL Here" class="form-control">
 						<span id="orpwebsite-error"></span>
 					</div>
 					<div class="form-group">
-						<label>Email Address</label> <input id="orpEmailId"
-							onfocus="clearError('orpemail-error')" type="text"
+						<label>Email</label> <input id="orpEmailId" type="text"
+							onfocus="clearError('orpemail-error')"
 							onblur="checkUserAvailability('orpEmailId','orpemail-error')"
 							placeholder="*Enter Email Address Here" class="form-control">
 						<span id="orpemail-error"></span>

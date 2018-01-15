@@ -1,3 +1,5 @@
+/*--------------------------------------USER ERRORS-----------------------------*/
+
 var userError = [ "Enter a valid email-id", "Enter a valid first-name",
 		"Enter a valid last-name",
 		"email-id doesnot exists please sign up to login",
@@ -13,6 +15,8 @@ var lengthError = [ "Maximum 30 characters", "Maximum 255 characters",
 var websiteError = [ "please enter a valid website" ]
 var emailStatus = [ "email available", "email id already taken" ]
 
+/*---------------------------------------REGEX-----------------------------------*/
+
 var nameReg = /^[a-zA-Z]+$/;
 var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 var phoneRegex = /^[0-9]{10}$/;
@@ -21,63 +25,124 @@ var zipRegex = /^[0-9]{6}$/;
 var stateReg = /^[a-zA-Z ]*$/;
 var webReg = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
 
+/*---------------------------------------NAVIGATION TAB-----------------------------------*/
+
 function login() {
 	location.href = "login.html";
 }
 
+/*---------------------------------------GETTING VALUES FROM REQUEST-----------------------------------*/
+
 function getValue(idName) {
 	return document.getElementById(idName).value.trim();
 }
+
+/*---------------------------------------DISPLAY ERRORS-----------------------------------*/
 
 function dispError(idName, arrName, index) {
 	// console.log(idName);
 	document.getElementById(idName).innerHTML = arrName[index];
 }
 
-function validateLogin() {
-	var status = false;
-	var username = getValue("user-email");
-	var password = getValue("user-password");
-	(checkEmail(username) === false) ? dispError("username-error", userError, 0)
-			: status = false;
-	// alert("UserName Cannot be Empty");
+/*---------------------------------------AJAX REQUESTS-----------------------------------*/
 
-	(checkField(password) === false) ? dispError("password-error", passError, 0)
-			: status = false;
-	// alert("Password cannot be Empty");
+function ajaxRequest(functionName, url, method, parameters) {
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest()
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open(method, url, true);
+	if (method == "post") {
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+	}
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			functionName(this.responseText);
+		}
+	}
+	if (parameters === "") {
+		ajax.send();
+	} else {
+		ajax.send(parameters);
+	}
+}
 
-	(checkEmail(username) === true && checkField(password) === false) ? dispError(
-			"password-error", passError, 1)
-			: status = false;
+/*---------------------------------------AVAILABILITY OF MAIL ID-----------------------------------*/
 
-	if (checkEmail(username) && checkField(password)) {
+function checkUserAvailability(idName, errorTag) {
+	var email = getValue(idName);
+	if (checkEmail(email)) {
 		var ajax;
 		if (XMLHttpRequest) {
 			ajax = new XMLHttpRequest();
 		} else {
-			ajax = new ActiveXobject("Microsoft.XMLHTTP");
+			ajax = new ActiveXobject("Microsoft.XHTTP");
 		}
-		ajax.open("post", "login");
+		ajax.open("post", "availability");
 		ajax.setRequestHeader("Content-type",
 				"application/x-www-form-urlencoded");
 		ajax.onreadystatechange = function() {
 			if (this.readyState === 4 && this.status === 200) {
-				if (this.responseText === "invalid user") {
-					dispError("username-error", userError, 3);
-					status = false;
-				} else if (this.responseText === "account not activated") {
-					dispError("username-error", userError, 4);
-					status = false;
-				} else if (this.responseText === "success") {
-					status = true;
+				// console.log(this.getAllResponseHeaders());
+				// console.log(this.responseText);
+				if (this.responseText === "available") {
+					dispError(errorTag, emailStatus, 0);
+				} else if (this.responseText === "already exists") {
+					dispError(errorTag, emailStatus, 1);
 				}
-
+				// console.log(this.responseText);
+				return this.responseText;
 			}
 		}
-		ajax.send("email=" + username + "&pass=" + password);
+		ajax.send("email=" + email);
+	} else {
+		dispError(errorTag, userError, 0);
+	}
+}
+
+/*---------------------------------------LOGIN FORM VALIDATION-----------------------------------*/
+
+function validateLogin(status) {
+	if (status == "true") {
+		return true;
+	} else {
+		var username = getValue("user-email");
+		var password = getValue("user-password");
+		if (checkEmail(username) === false) {
+			dispError("username-error", userError, 0);
+		}
+
+		if (checkField(password) === false) {
+			dispError("password-error", passError, 0);
+		}
+
+		if (checkEmail(username) === true && checkField(password) === false) {
+			dispError("password-error", passError, 1);
+		}
+
+		if (checkEmail(username) && checkField(password)) {
+			var parameter = "email=" + username + "&pass=" + password;
+			ajaxRequest(loginCheck, "login", "post", parameter);
+		}
 	}
 	return false;
 }
+
+function loginCheck(message) {
+	// console.log(message);
+	if (message === "invalid user") {
+		dispError("username-error", userError, 3);
+	} else if (message === "account not activated") {
+		dispError("username-error", userError, 4);
+	} else if (message === "success") {
+		validateLogin("true");
+	}
+}
+
+/*---------------------------------------REGULAR SIGN UP FORM VALIDATION-----------------------------------*/
 
 function regCheckDetails() {
 	var firstName = getValue("firstName");
@@ -153,10 +218,14 @@ function regCheckDetails() {
 
 }
 
-function orpCheckDetails() {
+/*---------------------------------------ORPHANAGE SIGN UP FORM VALIDATAION-----------------------------------*/
+
+function orpCheckDetails(status) {
+	if (status === "true") {
+		return true;
+	}
 	var flag = 0;
 	var count = 0;
-	var status = false;
 	var orpName = getValue("orpName");
 	var orpPh = getValue("orpPhoneNumber");
 	var orpAltNum = getValue("orpAltNumber");
@@ -165,29 +234,30 @@ function orpCheckDetails() {
 	var orpState = getValue("orpState");
 	var orpZip = getValue("orpZip");
 	var orpWebsite = getValue("orpWebsite");
-	var orpEmailId = getValue("orpEmailId");
 	var orpPass = getValue("orpPass");
 	var orpCheckPass = getValue("orpCheckPass");
 	(checkState(orpName) === false || orpName === "" || orpName === null) ? dispError(
 			"orpname-error", userError, 5)
 			: count++;
 
-	(checkPhoneNumber(orpPh) === false) ? dispError("orpnumber-error",
-			phoneNumberError, 0) : count++;
-
-	if (orpAltNum !== null && orpAltNum !== "") {
-		(checkPhoneNumber(orpAltNum) === false) ? dispError("orpaltnum-error",
-				phoneNumberError, 0) : flag = 1;
+	if (checkPhoneNumber(orpPh) === false) {
+		dispError("orpnumber-error", phoneNumberError, 0);
+	} else if (checkPhoneNumber(orpPh) === true) {
 		count++;
+		if (orpAltNum !== "" && orpAltNum !== null) {
+			if (checkPhoneNumber(orpAltNum) === false) {
+				dispError("orpaltnum-error", phoneNumberError, 0);
+				flag = 1;
+			} else if (checkPhoneNumber(orpAltNum) === true) {
+				if (orpPh === orpAltNum) {
+					dispError("orpnumber-error", phoneNumberError, 1);
+					dispError("orpaltnum-error", phoneNumberError, 1);
+				} else if (orpPh !== orpAltNum) {
+					count++;
+				}
+			}
+		}
 	}
-
-	if (orpPh === orpAltNum && (orpPh !== "" && orpPh !== null)
-			&& (orpAltNum !== "" && orpAltNum !== null)) {
-		dispError("orpnumber-error", phoneNumberError, 1);
-		dispError("orpaltnum-error", phoneNumberError, 1);
-		count = -2;
-	}
-
 	(checkAddress(orpAdd) === false) ? dispError("orpaddress-error",
 			addressError, 0) : count++;
 
@@ -207,92 +277,78 @@ function orpCheckDetails() {
 				websiteError, 0) : count++;
 	}
 
-	if (checkUserAvailability("orpEmailId", "orpemail-error") === true) {
-		count++;
+	if (checkEmail(orpEmailId) === false) {
+		dispError("orpemail-error", userError, 0);
 	}
 
-	(checkField(orpPass) === false) ? dispError("orppass-error", passError, 0)
-			: count++;
-
-	(checkField(orpCheckPass) === false) ? dispError("orpcheckpass-error",
-			passError, 0) : count++;
-
-	(checkPasswordLength(orpPass) === false) ? dispError("orppass-error",
-			passError, 3) : count++;
-
-	if (checkField(orpPass) && checkField(orpCheckPass)
-			&& orpPass !== orpCheckPass) {
-		dispError("orppass-error", passError, 2);
-		dispError("orpcheckpass-error", passError, 2);
-		count -= 2;
-	} else {
-		count++;
-	}
-
-	// console.log(flag + " " + count);
-	if ((count === 12 && flag === 1) || (count === 11 && flag === 1)
-			|| (flag === 0 && count === 10) || (count === 11 && flag === 0)) {
-		var ajax;
-		if (XMLHttpRequest) {
-			ajax = new XMLHttpRequest();
+	if (checkField(orpPass) === false) {
+		dispError("orppass-error", passError, 0);
+	} else if (checkField(orpPass) === true) {
+		if (checkPasswordLength(orpPass) === true) {
+			count++;
+			if (checkField(orpCheckPass) === false) {
+				dispError("orpcheckpass-error", passError, 0);
+			} else if (checkField(orpCheckPass) === true) {
+				if (orpPass === orpCheckPass) {
+					count++;
+				} else if (orpPass !== orpCheckPass) {
+					dispError("orppass-error", passError, 2);
+					dispError("orpcheckpass-error", passError, 2);
+				}
+			}
 		} else {
-			ajax = new ActiveXobject("Microsoft.XMLHTTP");
+			dispError("orppass-error", passError, 3);
 		}
-		ajax.open("post", "osignup");
-		ajax.setRequestHeader("Content-type",
-				"application/x-www-form-urlencoded");
-		ajax.onreadystatechange = function() {
-			if (this.readyState === 4 && this.status === 200) {
-				if (this.responseText === "success") {
-					status = true;
-				} else if (this.responseText === "error") {
-					alert("Server problem please try after sometimes");
-					status = false;
+	}
+	// console.log(document.getElementById("orpemail-error").innerHTML);
+	console.log(flag + " " + count);
+	if ((count === 10 && flag === 1) || (count === 9 && flag === 1)
+			|| (count === 8 && flag === 0) || (count === 9 && flag === 0)) {
+		if (checkEmail(email)) {
+			var ajax;
+			if (XMLHttpRequest) {
+				ajax = new XMLHttpRequest();
+			} else {
+				ajax = new ActiveXobject("Microsoft.XHTTP");
+			}
+			ajax.open("post", "availability");
+			ajax.setRequestHeader("Content-type",
+					"application/x-www-form-urlencoded");
+			ajax.onreadystatechange = function() {
+				if (this.readyState === 4 && this.status === 200) {
+					if (this.responseText === "available") {
+						console.log(this.responseText);
+						var parameter = "orpName=" + orpName + "&orpPhone="
+								+ orpPh + "&orpAltNum=" + orpAltNum
+								+ "&orpAddress=" + orpAdd + "&orpCity="
+								+ orpCity + "&orpState=" + orpState
+								+ "&orpZip=" + orpZip + "&orpWebsite="
+								+ orpWebsite + "&orpEmail=" + orpEmailId
+								+ "&orpPassword=" + orpPass;
+						ajaxRequest(redirectSignUp, "osignup", "post",
+								parameters);
+					} else if (this.responseText === "already exists") {
+						dispError(errorTag, emailStatus, 1);
+					}
 				}
 			}
 		}
-		var parameter = "orpName=" + orpName + "&orpPhone=" + orpPh
-				+ "&orpAltNum=" + orpAltNum + "&orpAddress=" + orpAdd
-				+ "&orpCity=" + orpCity + "&orpState=" + orpState + "&orpZip="
-				+ orpZip + "&orpWebsite=" + orpWebsite + "&orpEmail="
-				+ orpEmailId + "&orpPassword=" + orpPass;
-		ajax.send(parameter);
 
 	}
-	return status;
+	// console.log(status);
+	return false;
 }
 
-function checkUserAvailability(idName, errorTag) {
-	var status = false;
-	var email = getValue(idName);
-	if (checkEmail(email)) {
-		var ajax;
-		if (XMLHttpRequest) {
-			ajax = new XMLHttpRequest();
-		} else {
-			ajax = new ActiveXobject("Microsoft.XHTTP");
-		}
-		ajax.open("post", "availability");
-		ajax.setRequestHeader("Content-type",
-				"application/x-www-form-urlencoded");
-		ajax.onreadystatechange = function() {
-			if (this.readyState === 4 && this.status === 200) {
-				if (this.responseText === "available") {
-					dispError(errorTag, emailStatus, 0);
-					status = true;
-				} else if (this.responseText === "already exists") {
-					dispError(errorTag, emailStatus, 1);
-					status = false;
-				}
-			}
-		}
-		ajax.send("email=" + email);
-	} else {
-		dispError(errorTag, userError, 0);
-		status = false;
+function redirectSignUp(message) {
+	console.log(message);
+	if (message === "error") {
+		alert("Server problem please try after sometimes");
+	} else if (message === "success") {
+		location.href = "index.html";
 	}
-	return status;
 }
+
+/*---------------------------------------REGEX TESTS -----------------------------------*/
 
 function checkState(state) {
 	return stateReg.test(state);
@@ -337,6 +393,8 @@ function checkPasswordLength(value) {
 	return true;
 }
 
+/*---------------------------------------SHOW PASSWORD-----------------------------------*/
+
 function togglePassword() {
 	var check = document.getElementById("inputPassword").checked;
 	// console.log(check)
@@ -347,6 +405,8 @@ function togglePassword() {
 				'password');
 	}
 }
+
+/*---------------------------------------CLEAR ERRORS-----------------------------------*/
 
 function clearError(idName) {
 	// console.log(temp);
@@ -381,6 +441,8 @@ function clearError(idName) {
 }
 
 /* onkeyup functions */
+
+/*---------------------------------------CONDITION CHECKERS-----------------------------------*/
 
 function orpNameLength(idName, errorTag) {
 	var x = getValue(idName);
