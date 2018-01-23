@@ -17,7 +17,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-@SuppressWarnings("deprecation")
 @Entity
 @Table(name = "orp_orphanage", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "ph_num", name = "orp_orphanage_ph_num_unq"),
@@ -27,7 +26,6 @@ import javax.persistence.UniqueConstraint;
 @AttributeOverrides({
 		@AttributeOverride(name = "name", column = @Column(name = "orphanage_name", length = 50, nullable = false)),
 		@AttributeOverride(name = "state", column = @Column(name = "orp_state", length = 50, nullable = false)) })
-@org.hibernate.annotations.Entity(dynamicUpdate = true)
 public class Orphanage extends Details {
 
 	@Column(name = "website", nullable = true, length = 100)

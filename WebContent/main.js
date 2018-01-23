@@ -2,8 +2,8 @@
 
 var userError = [ "Enter a valid email-id", "Enter a valid first-name",
 		"Enter a valid last-name",
-		"email-id doesnot exists please sign up to login",
-		"account not activated", "enter a valid orphanage name" ];
+		"Email-id doesnot exists please sign up to login",
+		"Account not activated", "Enter a valid orphanage name" ];
 var passError = [ "Password cannot be empty", "Please enter the password",
 		"Password mismatch", "Minimum 8 characters" ];
 var phoneNumberError = [ "Please enter a 10 digit valid mobile number",
@@ -12,8 +12,8 @@ var addressError = [ "Please fill out the address", "Please enter valid city",
 		"Please enter valid state name", " Please enter valid zipcode" ];
 var lengthError = [ "Maximum 30 characters", "Maximum 255 characters",
 		"Maximum 50 characters" ];
-var websiteError = [ "please enter a valid website" ]
-var emailStatus = [ "email available", "email id already taken" ]
+var websiteError = [ "Please enter a valid website" ]
+var emailStatus = [ "Email available", "Email id already taken" ]
 
 /*---------------------------------------REGEX-----------------------------------*/
 
@@ -74,6 +74,7 @@ function ajaxRequest(functionName, url, method, parameters) {
 
 function checkUserAvailability(idName, errorTag) {
 	var email = getValue(idName);
+	// console.log(email);
 	if (checkEmail(email)) {
 		var ajax;
 		if (XMLHttpRequest) {
@@ -81,25 +82,32 @@ function checkUserAvailability(idName, errorTag) {
 		} else {
 			ajax = new ActiveXobject("Microsoft.XHTTP");
 		}
-		ajax.open("post", "availability");
+		ajax.open("post", "availability", true);
 		ajax.setRequestHeader("Content-type",
 				"application/x-www-form-urlencoded");
 		ajax.onreadystatechange = function() {
 			if (this.readyState === 4 && this.status === 200) {
-				// console.log(this.getAllResponseHeaders());
-				// console.log(this.responseText);
 				if (this.responseText === "available") {
 					dispError(errorTag, emailStatus, 0);
 				} else if (this.responseText === "already exists") {
 					dispError(errorTag, emailStatus, 1);
 				}
-				// console.log(this.responseText);
-				return this.responseText;
 			}
 		}
 		ajax.send("email=" + email);
 	} else {
 		dispError(errorTag, userError, 0);
+	}
+}
+
+function returnStatus(response) {
+	// console.log(response);
+	if (response === "available") {
+		console.log("returning success");
+		return "success";
+	} else if (response === "already exists") {
+		console.log("Returning fail");
+		return "fail";
 	}
 }
 
@@ -220,12 +228,8 @@ function regCheckDetails() {
 
 /*---------------------------------------ORPHANAGE SIGN UP FORM VALIDATAION-----------------------------------*/
 
-function orpCheckDetails(status) {
-	if (status === "true") {
-		return true;
-	}
-	var flag = 0;
-	var count = 0;
+function orpCheckDetails() {
+	var valid = true;
 	var orpName = getValue("orpName");
 	var orpPh = getValue("orpPhoneNumber");
 	var orpAltNum = getValue("orpAltNumber");
@@ -235,75 +239,76 @@ function orpCheckDetails(status) {
 	var orpZip = getValue("orpZip");
 	var orpWebsite = getValue("orpWebsite");
 	var orpPass = getValue("orpPass");
+	var email = getValue("orpEmailId");
 	var orpCheckPass = getValue("orpCheckPass");
-	(checkState(orpName) === false || orpName === "" || orpName === null) ? dispError(
-			"orpname-error", userError, 5)
-			: count++;
+
+	if (checkState(orpName) === false || orpName === "" || orpName === null) {
+		dispError("orpname-error", userError, 5);
+		valid = false;
+	}
 
 	if (checkPhoneNumber(orpPh) === false) {
 		dispError("orpnumber-error", phoneNumberError, 0);
-	} else if (checkPhoneNumber(orpPh) === true) {
-		count++;
-		if (orpAltNum !== "" && orpAltNum !== null) {
-			if (checkPhoneNumber(orpAltNum) === false) {
-				dispError("orpaltnum-error", phoneNumberError, 0);
-				flag = 1;
-			} else if (checkPhoneNumber(orpAltNum) === true) {
-				if (orpPh === orpAltNum) {
-					dispError("orpnumber-error", phoneNumberError, 1);
-					dispError("orpaltnum-error", phoneNumberError, 1);
-				} else if (orpPh !== orpAltNum) {
-					count++;
-				}
-			}
+		valid = false;
+	}
+	if (checkField(orpAltNum)) {
+		if (checkPhoneNumber(orpAltNum) === false) {
+			dispError("orpaltnum-error", phoneNumberError, 0);
+			valid = false;
 		}
 	}
-	(checkAddress(orpAdd) === false) ? dispError("orpaddress-error",
-			addressError, 0) : count++;
-
-	(checkState(orpCity) === false || orpCity === "" || orpCity === null) ? dispError(
-			"orpcity-error", addressError, 1)
-			: count++;
-
-	(checkState(orpState) === false || orpState === "" || orpState === null) ? dispError(
-			"orpstate-error", addressError, 2)
-			: count++;
-
-	(checkZip(orpZip) === false) ? dispError("orpzip-error", addressError, 3)
-			: count++;
-
-	if (orpWebsite !== "" && orpWebsite !== null) {
-		(checkWebsite(orpWebsite) === false) ? dispError("orpwebsite-error",
-				websiteError, 0) : count++;
+	if (orpPh === orpAltNum && (checkField(orpAltNum)) && (checkField(orpPh))) {
+		dispError("orpnumber-error", phoneNumberError, 1);
+		dispError("orpaltnum-error", phoneNumberError, 1);
+		valid = false;
+	}
+	if (checkAddress(orpAdd) === false) {
+		dispError("orpaddress-error", addressError, 0);
+		valid = false;
 	}
 
-	if (checkEmail(orpEmailId) === false) {
-		dispError("orpemail-error", userError, 0);
+	if (checkState(orpCity) === false || orpCity === "" || orpCity === null) {
+		dispError("orpcity-error", addressError, 1);
+		valid = false;
+	}
+
+	if (checkState(orpState) === false || orpState === "" || orpState === null) {
+		dispError("orpstate-error", addressError, 2);
+		valid = false;
+	}
+
+	if (checkZip(orpZip) === false) {
+		dispError("orpzip-error", addressError, 3);
+	}
+
+	if (orpWebsite !== "" && orpWebsite !== null) {
+		if (checkWebsite(orpWebsite) === false) {
+			dispError("orpwebsite-error", websiteError, 0);
+			valid = false;
+		}
 	}
 
 	if (checkField(orpPass) === false) {
 		dispError("orppass-error", passError, 0);
-	} else if (checkField(orpPass) === true) {
-		if (checkPasswordLength(orpPass) === true) {
-			count++;
-			if (checkField(orpCheckPass) === false) {
-				dispError("orpcheckpass-error", passError, 0);
-			} else if (checkField(orpCheckPass) === true) {
-				if (orpPass === orpCheckPass) {
-					count++;
-				} else if (orpPass !== orpCheckPass) {
-					dispError("orppass-error", passError, 2);
-					dispError("orpcheckpass-error", passError, 2);
-				}
-			}
-		} else {
-			dispError("orppass-error", passError, 3);
-		}
+		valid = false;
 	}
-	// console.log(document.getElementById("orpemail-error").innerHTML);
-	console.log(flag + " " + count);
-	if ((count === 10 && flag === 1) || (count === 9 && flag === 1)
-			|| (count === 8 && flag === 0) || (count === 9 && flag === 0)) {
+	if (checkPasswordLength(orpPass) === true) {
+		if (checkField(orpCheckPass) === false) {
+			dispError("orpcheckpass-error", passError, 0);
+			valid = false;
+		} else if (checkField(orpCheckPass) === true) {
+			if (orpPass !== orpCheckPass) {
+				dispError("orppass-error", passError, 2);
+				dispError("orpcheckpass-error", passError, 2);
+				valid = false;
+			}
+		}
+	} else {
+		dispError("orppass-error", passError, 3);
+		valid = false;
+	}
+	console.log(valid);
+	if (valid === true) {
 		if (checkEmail(email)) {
 			var ajax;
 			if (XMLHttpRequest) {
@@ -311,31 +316,29 @@ function orpCheckDetails(status) {
 			} else {
 				ajax = new ActiveXobject("Microsoft.XHTTP");
 			}
-			ajax.open("post", "availability");
+			ajax.open("post", "availability", true);
 			ajax.setRequestHeader("Content-type",
 					"application/x-www-form-urlencoded");
 			ajax.onreadystatechange = function() {
 				if (this.readyState === 4 && this.status === 200) {
 					if (this.responseText === "available") {
-						console.log(this.responseText);
 						var parameter = "orpName=" + orpName + "&orpPhone="
 								+ orpPh + "&orpAltNum=" + orpAltNum
 								+ "&orpAddress=" + orpAdd + "&orpCity="
 								+ orpCity + "&orpState=" + orpState
 								+ "&orpZip=" + orpZip + "&orpWebsite="
-								+ orpWebsite + "&orpEmail=" + orpEmailId
+								+ orpWebsite + "&orpEmail=" + email
 								+ "&orpPassword=" + orpPass;
 						ajaxRequest(redirectSignUp, "osignup", "post",
-								parameters);
+								parameter);
 					} else if (this.responseText === "already exists") {
-						dispError(errorTag, emailStatus, 1);
+						dispError("orpemail-error", emailStatus, 1);
 					}
 				}
 			}
+			ajax.send("email=" + email);
 		}
-
 	}
-	// console.log(status);
 	return false;
 }
 
@@ -448,7 +451,9 @@ function orpNameLength(idName, errorTag) {
 	var x = getValue(idName);
 	if (x.length > 50) {
 		x = x.slice(0, x.length - 1);
-		dispError(errorTag, lengthError, 0);
+		console.log(x);
+		document.getElementById(idName).value = x;
+		dispError(errorTag, lengthError, 2);
 	} else {
 		document.getElementById(errorTag).innerHTML = '';
 	}
@@ -458,6 +463,7 @@ function firstNameLength(idName, errorTag) {
 	var x = getValue(idName);
 	if (x.length > 30) {
 		x = x.slice(0, x.length - 1);
+		document.getElementById(idName).value = x;
 		dispError(errorTag, lengthError, 0);
 	} else {
 		document.getElementById(errorTag).innerHTML = '';
@@ -468,6 +474,7 @@ function lastNameLength(idName, errorTag) {
 	var x = getValue(idName);
 	if (x.length > 30) {
 		x = x.slice(0, x.length - 1);
+		document.getElementById(idName).value = x;
 		dispError(errorTag, lengthError, 0);
 	} else {
 		document.getElementById(errorTag).innerHTML = '';
@@ -478,6 +485,7 @@ function addressLength(idName, errorTag) {
 	var x = getValue(idName);
 	if (x.length > 255) {
 		x = x.slice(0, x.length - 1);
+		document.getElementById(idName).value = x;
 		dispError(errorTag, lengthError, 1);
 	} else {
 		document.getElementById(errorTag).innerHTML = '';
@@ -488,6 +496,7 @@ function cityLength(idName, errorTag) {
 	var x = getValue(idName);
 	if (x.length > 50) {
 		x = x.slice(0, x.length - 1);
+		document.getElementById(idName).value = x;
 		dispError(errorTag, lengthError, 2);
 	} else {
 		document.getElementById(errorTag).innerHTML = '';
@@ -498,6 +507,7 @@ function stateLength(idName, errorTag) {
 	var x = getValue(idName);
 	if (x.length > 50) {
 		x = x.slice(0, x.length - 1);
+		document.getElementById(idName).value = x;
 		dispError(errorTag, lengthError, 2);
 	} else {
 		document.getElementById(errorTag).innerHTML = '';
