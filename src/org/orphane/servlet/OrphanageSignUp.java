@@ -13,6 +13,7 @@ import org.orphane.model.Address;
 import org.orphane.model.Credential;
 import org.orphane.model.Orphanage;
 import org.orphane.services.CredentialService;
+import org.orphane.services.FindDuplicates;
 import org.orphane.services.SaveModels;
 
 @WebServlet("/osignup")
@@ -46,8 +47,6 @@ public class OrphanageSignUp extends HttpServlet {
 				System.out.println(orphanageAddress + " " + orphanageAltNum + " " + orphanageCity + " " + orphanageMail
 						+ " " + orphanageName + " " + orphanagePass + " " + orphanagePhone + " " + orphanageState + " "
 						+ orphanageWebsite + " " + orphanageZip);
-				CredentialService.addNewCredential(orphanageMail, orphanagePass, "ORPHANAGE");
-				Credential credential = CredentialService.getUser(orphanageMail);
 				Address address = new Address();
 				address.setAddress(orphanageAddress);
 				address.setCity(orphanageCity);
@@ -61,10 +60,31 @@ public class OrphanageSignUp extends HttpServlet {
 				orp.setName(orphanageName);
 				orp.setPhoneNumber(Long.parseLong(orphanagePhone));
 				orp.setWebsite(orphanageWebsite);
-				orp.setCredential(credential);
-				SaveModels.addOrphanage(orp);
-				System.out.println(orp);
-				out.write("success");
+				// cre.setEmail(orphanageMail);
+				// cre.setPassword(orphanagePass);
+				// cre.setUserType(UserType.ORPHANAGE);
+				// orp.setCredential(credential);
+				// result = FindDuplicates.Orphanage(orp);
+				// System.out.println(result);
+				// if (result.equals("success")) {
+				if (FindDuplicates.Orphanage(Long.parseLong(orphanagePhone))) {
+					if (orphanageAltNum.isEmpty() == false && orphanageAltNum != null) {
+						if (FindDuplicates.Orphanage(Long.parseLong(orphanageAltNum)) == false) {
+							out.write("This Number Already Taken");
+						}
+					} else {
+						CredentialService.addNewCredential(orphanageMail, orphanagePass, "ORPHANAGE");
+						Credential credential = CredentialService.getUser(orphanageMail);
+						orp.setCredential(credential);
+						// System.out.println(FindDuplicates.Orphanage(Long.parseLong(orphanagePhone)));
+						SaveModels.addOrphanage(orp);
+						out.write("success");
+						System.out.println(orp);
+					}
+
+				} else {
+					out.write("Phone Number Already Taken");
+				}
 			} catch (Exception e) {
 				out.write("error");
 				e.printStackTrace();

@@ -24,8 +24,7 @@ import javax.persistence.UniqueConstraint;
 		@UniqueConstraint(columnNames = { "address", "city", "state_name",
 				"pincode" }, name = "orp_orphanage_address_unq") }, catalog = "orphane")
 @AttributeOverrides({
-		@AttributeOverride(name = "name", column = @Column(name = "orphanage_name", length = 50, nullable = false)),
-		@AttributeOverride(name = "state", column = @Column(name = "orp_state", length = 50, nullable = false)) })
+		@AttributeOverride(name = "name", column = @Column(name = "orphanage_name", length = 50, nullable = false)) })
 public class Orphanage extends Details {
 
 	@Column(name = "website", nullable = true, length = 100)

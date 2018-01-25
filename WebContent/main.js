@@ -153,6 +153,7 @@ function loginCheck(message) {
 /*---------------------------------------REGULAR SIGN UP FORM VALIDATION-----------------------------------*/
 
 function regCheckDetails() {
+	var valid = true;
 	var firstName = getValue("firstName");
 	var lastName = getValue("lastName");
 	var phoneNumber = getValue("phoneNumber");
@@ -164,65 +165,106 @@ function regCheckDetails() {
 	var emailId = getValue("emailId");
 	var pass = getValue("pass");
 	var checkPass = getValue("checkPass");
-	var count = 0;
-	var flag = 0;
-	(checkName(firstName) === false) ? dispError("fname-error", userError, 1)
-			: count++;
-
-	(checkName(lastName) === false) ? dispError("lname-error", userError, 2)
-			: count++;
-
-	(checkPhoneNumber(phoneNumber) === false) ? dispError("number-error",
-			phoneNumberError, 0) : count++;
-
-	if (altNumber !== null && altNumber !== "") {
-		(checkPhoneNumber(altNumber) === false) ? dispError("altnum-error",
-				phoneNumberError, 0) : flag = 1;
-		count++;
+	if (checkState(firstName) === false || firstName === ""
+			|| firstName === null) {
+		dispError("fname-error", userError, 1);
+		valid = false;
 	}
-	if (phoneNumber === altNumber
-			&& (phoneNumber !== "" && phoneNumber !== null)
-			&& (altNumber !== "" && altNumber !== null)) {
+
+	if (checkState(lastName) === false || lastName === "" || lastName === null) {
+		dispError("lname-error", userError, 2);
+		valid = false;
+	}
+
+	if (checkPhoneNumber(phoneNumber) === false) {
+		dispError("number-error", phoneNumberError, 0);
+		valid = false;
+	}
+	if (checkField(altNumber)) {
+		if (checkPhoneNumber(altNumber) === false) {
+			dispError("altnum-error", phoneNumberError, 0);
+			valid = false;
+		}
+	}
+	if (phoneNumber === altNumber && (checkField(altNumber))
+			&& (checkField(phoneNumber))) {
 		dispError("number-error", phoneNumberError, 1);
 		dispError("altnum-error", phoneNumberError, 1);
-		count -= 2;
+		valid = false;
 	}
-	(checkAddress(address) === false) ? dispError("address-error",
-			addressError, 0) : count++;
-
-	(checkState(city) === false || city === "" || city === null) ? dispError(
-			"city-error", addressError, 1) : count++;
-
-	(checkState(state) === false || state === "" || state === null) ? dispError(
-			"state-error", addressError, 2)
-			: count++;
-
-	(checkZip(zip) === false) ? dispError("zip-error", addressError, 3)
-			: count++;
-
-	if (checkUserAvailability("emailId", "email-error") === true) {
-		count++;
+	if (checkAddress(address) === false) {
+		dispError("address-error", addressError, 0);
+		valid = false;
 	}
 
-	(checkField(pass) === false) ? dispError("pass-error", passError, 0)
-			: count++;
-
-	(checkField(checkPass) === false) ? dispError("checkpass-error", passError,
-			0) : count++;
-
-	(checkPasswordLength(pass) === false) ? dispError("pass-error", passError,
-			3) : count++;
-
-	if (checkField(pass) && checkField(checkPass) && pass !== checkPass) {
-		dispError("pass-error", passError, 2);
-		dispError("checkpass-error", passError, 2);
-		count -= 2;
+	if (checkState(city) === false || city === "" || city === null) {
+		dispError("city-error", addressError, 1);
+		valid = false;
 	}
-	// console.log(count + " " + flag);
-	if ((flag === 1 && count === 11) || (flag === 0 && count === 10)) {
-		return true;
+
+	if (checkState(state) === false || state === "" || state === null) {
+		dispError("state-error", addressError, 2);
+		valid = false;
+	}
+
+	if (checkZip(zip) === false) {
+		dispError("zip-error", addressError, 3);
+	}
+
+	if (checkField(pass) === false) {
+		dispError("pass-error", passError, 0);
+		valid = false;
+	}
+	if (checkPasswordLength(pass) === true) {
+		if (checkField(checkPass) === false) {
+			dispError("checkpass-error", passError, 0);
+			valid = false;
+		} else if (checkField(checkPass) === true) {
+			if (pass !== checkPass) {
+				dispError("pass-error", passError, 2);
+				dispError("checkpass-error", passError, 2);
+				valid = false;
+			}
+		}
+	} else {
+		dispError("pass-error", passError, 3);
+		valid = false;
+	}
+	console.log(valid);
+	if (valid === true) {
+		if (checkEmail(emailId)) {
+			var ajax;
+			if (XMLHttpRequest) {
+				ajax = new XMLHttpRequest();
+			} else {
+				ajax = new ActiveXobject("Microsoft.XHTTP");
+			}
+			ajax.open("post", "availability", true);
+			ajax.setRequestHeader("Content-type",
+					"application/x-www-form-urlencoded");
+			ajax.onreadystatechange = function() {
+				if (this.readyState === 4 && this.status === 200) {
+					if (this.responseText === "available") {
+						var parameter = "firstName=" + firstName + "lastName="
+								+ lastName + "&phoneNumber=" + phoneNumber
+								+ "&altNum=" + altNum + "&address=" + address
+								+ "&city=" + city + "&state=" + state + "&zip="
+								+ zip + "&email=" + emailId + "&password="
+								+ pass;
+						ajaxRequest(regSignUp, "rsignup", "post", parameter);
+					} else if (this.responseText === "already exists") {
+						dispError("email-error", emailStatus, 1);
+					}
+				}
+			}
+			ajax.send("email=" + emailId);
+		}
 	}
 	return false;
+}
+
+function regSignUp(message) {
+	console.log(message);
 
 }
 
@@ -344,10 +386,14 @@ function orpCheckDetails() {
 
 function redirectSignUp(message) {
 	console.log(message);
-	if (message === "error") {
-		alert("Server problem please try after sometimes");
-	} else if (message === "success") {
+	if (message === "success") {
 		location.href = "index.html";
+	} else if (message === "Phone Number Already Taken") {
+		alert(message);
+		document.getElementById("orpnum-error").innerHTML = message;
+	} else if (message === "This Number Already Taken") {
+		document.getElementById('orpaltnum-error').innerHTML = message;
+		alert(message);
 	}
 }
 
