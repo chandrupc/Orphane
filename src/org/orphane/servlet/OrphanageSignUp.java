@@ -44,9 +44,14 @@ public class OrphanageSignUp extends HttpServlet {
 				String orphanageWebsite = request.getParameter("orpWebsite");
 				String orphanageMail = request.getParameter("orpEmail");
 				String orphanagePass = request.getParameter("orpPassword");
-				System.out.println(orphanageAddress + " " + orphanageAltNum + " " + orphanageCity + " " + orphanageMail
-						+ " " + orphanageName + " " + orphanagePass + " " + orphanagePhone + " " + orphanageState + " "
-						+ orphanageWebsite + " " + orphanageZip);
+				/*
+				 * System.out.println(orphanageAddress + " " + orphanageAltNum +
+				 * " " + orphanageCity + " " + orphanageMail + " " +
+				 * orphanageName + " " + orphanagePass + " " + orphanagePhone +
+				 * " " + orphanageState + " " + orphanageWebsite + " " +
+				 * orphanageZip);
+				 */
+				long e = 0;
 				Address address = new Address();
 				address.setAddress(orphanageAddress);
 				address.setCity(orphanageCity);
@@ -56,37 +61,26 @@ public class OrphanageSignUp extends HttpServlet {
 				orp.setAddress(address);
 				if (orphanageAltNum.isEmpty() == false && orphanageAltNum != null) {
 					orp.setAltPhoneNumber(Long.parseLong(orphanageAltNum));
+					e = Long.parseLong(orphanageAltNum);
 				}
 				orp.setName(orphanageName);
 				orp.setPhoneNumber(Long.parseLong(orphanagePhone));
-				orp.setWebsite(orphanageWebsite);
-				// cre.setEmail(orphanageMail);
-				// cre.setPassword(orphanagePass);
-				// cre.setUserType(UserType.ORPHANAGE);
-				// orp.setCredential(credential);
-				// result = FindDuplicates.Orphanage(orp);
-				// System.out.println(result);
-				// if (result.equals("success")) {
-				if (FindDuplicates.Orphanage(Long.parseLong(orphanagePhone))) {
-					if (orphanageAltNum.isEmpty() == false && orphanageAltNum != null) {
-						if (FindDuplicates.Orphanage(Long.parseLong(orphanageAltNum)) == false) {
-							out.write("This Number Already Taken");
-						}
-					} else {
-						CredentialService.addNewCredential(orphanageMail, orphanagePass, "ORPHANAGE");
-						Credential credential = CredentialService.getUser(orphanageMail);
-						orp.setCredential(credential);
-						// System.out.println(FindDuplicates.Orphanage(Long.parseLong(orphanagePhone)));
-						SaveModels.addOrphanage(orp);
-						out.write("success");
-						System.out.println(orp);
-					}
+				String res = FindDuplicates.orphanage(Long.parseLong(orphanagePhone), orphanageWebsite, address, e);
+				System.out.println(res);
+				if (res == null) {
+					orp.setWebsite(orphanageWebsite);
+					CredentialService.addNewCredential(orphanageMail, orphanagePass, "ORPHANAGE");
+					Credential credential = CredentialService.getUser(orphanageMail);
+					orp.setCredential(credential);
+					SaveModels.addOrphanage(orp);
+					out.write("success");
+				}
 
-				} else {
-					out.write("Phone Number Already Taken");
+				else {
+					out.write(res);
 				}
 			} catch (Exception e) {
-				out.write("error");
+				out.write("{message : 'Error'}");
 				e.printStackTrace();
 			}
 		}

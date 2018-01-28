@@ -8,8 +8,9 @@ var passError = [ "Password cannot be empty", "Please enter the password",
 		"Password mismatch", "Minimum 8 characters" ];
 var phoneNumberError = [ "Please enter a 10 digit valid mobile number",
 		"Alternate number is same as primary" ];
-var addressError = [ "Please fill out the address", "Please enter valid city",
-		"Please enter valid state name", " Please enter valid zipcode" ];
+var addressError = [ "Please fill out the address properly",
+		"Please enter valid city", "Please enter valid state name",
+		" Please enter valid zipcode" ];
 var lengthError = [ "Maximum 30 characters", "Maximum 255 characters",
 		"Maximum 50 characters" ];
 var websiteError = [ "Please enter a valid website" ]
@@ -29,6 +30,12 @@ var webReg = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\
 
 function login() {
 	location.href = "login.html";
+}
+
+/*---------------------------------------ORPHANAGE USERS SIGN UP FORM RESET-----------------------------------*/
+
+function loadOrpSignUp() {
+	document.getElementById("orpsignup").reset();
 }
 
 /*---------------------------------------GETTING VALUES FROM REQUEST-----------------------------------*/
@@ -384,17 +391,24 @@ function orpCheckDetails() {
 	return false;
 }
 
-function redirectSignUp(message) {
-	console.log(message);
-	if (message === "success") {
+function redirectSignUp(received) {
+	console.log(received);
+	if (received === "success") {
 		location.href = "index.html";
-	} else if (message === "Phone Number Already Taken") {
-		alert(message);
-		document.getElementById("orpnum-error").innerHTML = message;
-	} else if (message === "This Number Already Taken") {
-		document.getElementById('orpaltnum-error').innerHTML = message;
-		alert(message);
+	} else if (received === "Phone Number found") {
+		document.getElementById('orpnumber-error').innerHTML = received;
+		document.getElementById('orpaltnum-error').innerHTML = received;
+		alert(received);
+	} else if (received === "Website found") {
+		document.getElementById('orpwebsite-error').innerHTML = received;
+		alert(received);
+	} else if (received === "Address found") {
+		document.getElementById("orpaddress-error").innerHTML = received;
+		alert(received);
+	} else if (received === "Error") {
+		alert("Server error occured try again after some times");
 	}
+
 }
 
 /*---------------------------------------REGEX TESTS -----------------------------------*/
