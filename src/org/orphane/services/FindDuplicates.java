@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.orphane.model.Address;
 import org.orphane.model.Orphanage;
+import org.orphane.model.RegularUsers;
 import org.orphane.util.HBUtil;
 
 @SuppressWarnings({ "deprecation", "unchecked", "rawtypes" })
@@ -65,6 +66,51 @@ public class FindDuplicates {
 			e.printStackTrace();
 		}
 		System.out.println("returning : " + status);
+		return status;
+	}
+
+	public static String RegularUsers(RegularUsers reg) {
+		String status = null;
+		try {
+			SessionFactory sf = HBUtil.getSessionFactory();
+			Session ses = sf.openSession();
+			ses.beginTransaction();
+			Query query = ses.createQuery("from RegularUsers");
+			List<RegularUsers> results = query.getResultList();
+			if (results != null) {
+				for (RegularUsers each : results) {
+					if (each.getPhoneNumber().equals(reg.phoneNumber) || (reg.getAltPhoneNumber() != null
+							&& each.getPhoneNumber().equals(reg.getAltPhoneNumber()))) {
+						status = "Phone Number Found";
+					} else if (reg.getAltPhoneNumber() != null) {
+						if (each.getAltPhoneNumber().equals(reg.getAltPhoneNumber())
+								|| each.getAltPhoneNumber().equals(reg.getPhoneNumber())) {
+							status = "Phone Number Found";
+						}
+					}
+
+					/*
+					 * System.out.println(each.getAddress().address.equals((reg.
+					 * getAddress().address)));
+					 * System.out.println(each.getAddress().getCity().equals(reg
+					 * .getAddress().getCity()));
+					 * System.out.println(each.getAddress().getState().equals(
+					 * reg.getAddress().getState()));
+					 * System.out.println(each.getAddress().getPincode().equals(
+					 * reg.getAddress().getPincode()));
+					 */
+					
+					if (each.getAddress().address.equals(reg.getAddress().address)
+							&& each.getAddress().getCity().equals(reg.getAddress().getCity())
+							&& each.getAddress().getPincode().equals(reg.getAddress().getPincode())
+							&& each.getAddress().getState().equals(reg.getAddress().getState())) {
+						status = "Address Found";
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return status;
 	}
 }

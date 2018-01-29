@@ -72,25 +72,25 @@ public class SaveModels {
 		}
 	}
 
-	public static void addRegularUsers(RegularUsers regUser){
+	public static void addRegularUsers(RegularUsers regUser) {
 		try {
 			Session session = HBUtil.getSessionFactory().openSession();
 			session.beginTransaction();
 			session.save(regUser);
 			session.getTransaction().commit();
-			session.close();			
+			session.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void addTrustee(Trustee trustee){
+	public static void addTrustee(Trustee trustee) {
 		try {
 			Session session = HBUtil.getSessionFactory().openSession();
 			session.beginTransaction();
 			session.save(trustee);
 			session.getTransaction().commit();
-			session.close();			
+			session.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

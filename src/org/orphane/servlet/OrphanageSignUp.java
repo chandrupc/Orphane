@@ -13,6 +13,7 @@ import org.orphane.model.Address;
 import org.orphane.model.Credential;
 import org.orphane.model.Orphanage;
 import org.orphane.services.CredentialService;
+import org.orphane.services.EmailService;
 import org.orphane.services.FindDuplicates;
 import org.orphane.services.SaveModels;
 
@@ -73,10 +74,11 @@ public class OrphanageSignUp extends HttpServlet {
 					Credential credential = CredentialService.getUser(orphanageMail);
 					orp.setCredential(credential);
 					SaveModels.addOrphanage(orp);
+					EmailService.send(orphanageMail, "Verify Your Account",
+							"<a href='https://localhost:8080/orphane/activate?authKey=" + credential.getAuthKey()
+									+ "'></a>");
 					out.write("success");
-				}
-
-				else {
+				} else {
 					out.write(res);
 				}
 			} catch (Exception e) {

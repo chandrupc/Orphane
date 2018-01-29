@@ -172,6 +172,7 @@ function regCheckDetails() {
 	var emailId = getValue("emailId");
 	var pass = getValue("pass");
 	var checkPass = getValue("checkPass");
+	var dob = getValue("dateOfBirth");
 	if (checkState(firstName) === false || firstName === ""
 			|| firstName === null) {
 		dispError("fname-error", userError, 1);
@@ -252,12 +253,12 @@ function regCheckDetails() {
 			ajax.onreadystatechange = function() {
 				if (this.readyState === 4 && this.status === 200) {
 					if (this.responseText === "available") {
-						var parameter = "firstName=" + firstName + "lastName="
-								+ lastName + "&phoneNumber=" + phoneNumber
-								+ "&altNum=" + altNum + "&address=" + address
-								+ "&city=" + city + "&state=" + state + "&zip="
-								+ zip + "&email=" + emailId + "&password="
-								+ pass;
+						var parameter = "firstName=" + firstName + "&lastName="
+								+ lastName + "&dateOfBirth=" + dob
+								+ "&phoneNumber=" + phoneNumber + "&altNum="
+								+ altNumber + "&address=" + address + "&city="
+								+ city + "&state=" + state + "&zip=" + zip
+								+ "&email=" + emailId + "&password=" + pass;
 						ajaxRequest(regSignUp, "rsignup", "post", parameter);
 					} else if (this.responseText === "already exists") {
 						dispError("email-error", emailStatus, 1);
@@ -272,6 +273,18 @@ function regCheckDetails() {
 
 function regSignUp(message) {
 	console.log(message);
+	if (message === "success") {
+		location.href = "index.html";
+	} else if (message === "Phone Number Taken") {
+		document.getElementById("number-error").innerHTML = message;
+		document.getElementById("altnum-error").innerHTML = message;
+		alert(message);
+	} else if (message === "Address Already Taken") {
+		alert(message);
+		document.getElementById("address-error").innerHTML = message;
+	} else if (message === "error") {
+		alert("Servor error occured\nPlease Try after sometimes")
+	}
 
 }
 
@@ -390,6 +403,8 @@ function orpCheckDetails() {
 	}
 	return false;
 }
+
+/*---------------------------------------ORPHANAGE SIGN UP FORM REDIRECT-----------------------------------*/
 
 function redirectSignUp(received) {
 	console.log(received);
