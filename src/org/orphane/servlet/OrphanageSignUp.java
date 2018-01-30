@@ -16,6 +16,7 @@ import org.orphane.services.CredentialService;
 import org.orphane.services.EmailService;
 import org.orphane.services.FindDuplicates;
 import org.orphane.services.SaveModels;
+import org.orphane.util.AUTHIDGen;
 
 @WebServlet("/osignup")
 public class OrphanageSignUp extends HttpServlet {
@@ -34,7 +35,7 @@ public class OrphanageSignUp extends HttpServlet {
 			throws ServletException, IOException {
 		try (PrintWriter out = response.getWriter()) {
 			try {
-				response.setContentType("type/plain");
+				response.setContentType("text/html");
 				String orphanageName = request.getParameter("orpName");
 				String orphanagePhone = request.getParameter("orpPhone");
 				String orphanageAltNum = request.getParameter("orpAltNum");
@@ -70,14 +71,21 @@ public class OrphanageSignUp extends HttpServlet {
 				System.out.println(res);
 				if (res == null) {
 					orp.setWebsite(orphanageWebsite);
-					CredentialService.addNewCredential(orphanageMail, orphanagePass, "ORPHANAGE");
-					Credential credential = CredentialService.getUser(orphanageMail);
-					orp.setCredential(credential);
-					SaveModels.addOrphanage(orp);
-					EmailService.send(orphanageMail, "Verify Your Account",
-							"<a href='https://localhost:8080/orphane/activate?authKey=" + credential.getAuthKey()
-									+ "'></a>");
-					out.write("success");
+					String authkey = AUTHIDGen.generateKey(30);
+					System.out.println(authkey);
+					if (EmailService.send(orphanageMail, "Confirm Your Account",
+							"<a href='http://localhost:8080/orphane/activate?mail=" + orphanageMail + "&authkey="
+									+ authkey + "'>Follow the link to activate your account</a>")) {
+						orp.setWebsite(orphanageWebsite);
+						CredentialService.addNewCredential(orphanageMail, orphanagePass, "ORPHANAGE", authkey);
+						Credential credential = CredentialService.getUser(orphanageMail);
+						orp.setCredential(credential);
+						SaveModels.addOrphanage(orp);
+						out.write("success");
+					} else {
+						out.write("Network error");
+					}
+
 				} else {
 					out.write(res);
 				}

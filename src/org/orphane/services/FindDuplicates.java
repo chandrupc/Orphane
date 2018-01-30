@@ -81,36 +81,34 @@ public class FindDuplicates {
 				for (RegularUsers each : results) {
 					if (each.getPhoneNumber().equals(reg.phoneNumber) || (reg.getAltPhoneNumber() != null
 							&& each.getPhoneNumber().equals(reg.getAltPhoneNumber()))) {
-						status = "Phone Number Found";
+						status = "Phone Number Taken";
 					} else if (reg.getAltPhoneNumber() != null) {
 						if (each.getAltPhoneNumber().equals(reg.getAltPhoneNumber())
 								|| each.getAltPhoneNumber().equals(reg.getPhoneNumber())) {
-							status = "Phone Number Found";
+							status = "Phone Number Taken";
 						}
 					}
+					System.out.println(each.getAddress().address + " " + reg.getAddress().address);
+					System.out.println(each.getAddress().getCity() + " " + reg.getAddress().getCity());
+					System.out.println(each.getAddress().getState() + " " + reg.getAddress().getState());
+					System.out.println(each.getAddress().getPincode() + " " + reg.getAddress().getPincode());
+					System.out.println(each.getAddress().address.equals((reg.getAddress().address)));
+					System.out.println(each.getAddress().getCity().equals(reg.getAddress().getCity()));
+					System.out.println(each.getAddress().getState().equals(reg.getAddress().getState()));
+					System.out.println(each.getAddress().getPincode().equals(reg.getAddress().getPincode()));
 
-					/*
-					 * System.out.println(each.getAddress().address.equals((reg.
-					 * getAddress().address)));
-					 * System.out.println(each.getAddress().getCity().equals(reg
-					 * .getAddress().getCity()));
-					 * System.out.println(each.getAddress().getState().equals(
-					 * reg.getAddress().getState()));
-					 * System.out.println(each.getAddress().getPincode().equals(
-					 * reg.getAddress().getPincode()));
-					 */
-					
 					if (each.getAddress().address.equals(reg.getAddress().address)
 							&& each.getAddress().getCity().equals(reg.getAddress().getCity())
 							&& each.getAddress().getPincode().equals(reg.getAddress().getPincode())
 							&& each.getAddress().getState().equals(reg.getAddress().getState())) {
-						status = "Address Found";
+						status = "Address Already Taken";
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(status);
 		return status;
 	}
 }

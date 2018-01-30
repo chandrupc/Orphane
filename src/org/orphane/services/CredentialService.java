@@ -48,7 +48,7 @@ public class CredentialService {
 		return status;
 	}
 
-	public static boolean addNewCredential(String email, String password, String type) {
+	public static boolean addNewCredential(String email, String password, String type, String authKey) {
 		boolean status = false;
 		try {
 			SessionFactory sf = HBUtil.getSessionFactory();
@@ -57,7 +57,7 @@ public class CredentialService {
 			Credential user = new Credential();
 			user.setEmail(email);
 			user.setPassword(password);
-			user.setAuthKey(AUTHIDGen.generateKey(30));
+			user.setAuthKey(authKey);
 			if (type.equalsIgnoreCase("ORPHANAGE")) {
 				user.setUserType(UserType.ORPHANAGE);
 			} else if (type.equalsIgnoreCase("REGULAR")) {
@@ -74,25 +74,27 @@ public class CredentialService {
 		return status;
 	}
 
-	public static boolean activateUser(String email, String password, String authKey) {
+	public static boolean activateUser(String email, String authKey) {
 		boolean status = false;
 		try {
 			SessionFactory sf = HBUtil.getSessionFactory();
 			Session ses = sf.openSession();
 			ses.beginTransaction();
 			Credential user = ses.get(Credential.class, email);
+			System.out.println(user);
 			if (user != null) {
-				if (email.equals(user.getEmail()) && password.equals(user.getPassword())
-						&& authKey.equals(user.getAuthKey())) {
+				if (email.equals(user.getEmail()) && authKey.equals(user.getAuthKey())) {
+					System.out.println("user account activated");
 					user.setStatus(UserStatus.ACTIVATED);
+					user.setAuthKey(AUTHIDGen.generateKey(30));
+					ses.update(user);
+					ses.getTransaction().commit();
+					ses.close();
+					status = true;
 				}
-				user.setAuthKey(AUTHIDGen.generateKey(30));
-				ses.update(user);
-				ses.getTransaction().commit();
-				ses.close();
-				status = true;
 			}
 		} catch (Exception e) {
+			status = false;
 			e.printStackTrace();
 		}
 		return status;

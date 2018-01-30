@@ -152,6 +152,8 @@ function loginCheck(message) {
 		dispError("username-error", userError, 3);
 	} else if (message === "account not activated") {
 		dispError("username-error", userError, 4);
+	} else if ("Incorrect Password") {
+		alert("Incorrect password")
 	} else if (message === "success") {
 		validateLogin("true");
 	}
@@ -271,19 +273,47 @@ function regCheckDetails() {
 	return false;
 }
 
-function regSignUp(message) {
-	console.log(message);
-	if (message === "success") {
+function regSignUp(got) {
+	// console.log(got);
+	var ajax;
+	if (got === "success") {
 		location.href = "index.html";
-	} else if (message === "Phone Number Taken") {
-		document.getElementById("number-error").innerHTML = message;
-		document.getElementById("altnum-error").innerHTML = message;
-		alert(message);
-	} else if (message === "Address Already Taken") {
-		alert(message);
-		document.getElementById("address-error").innerHTML = message;
-	} else if (message === "error") {
+		/*
+		 * console.log("success"); console.log(got.firstName);
+		 * console.log(got.lastName); console.log(got.phoneNumber);
+		 * console.log(got.altNumber); console.log(got.address);
+		 * console.log(got.city); console.log(got.state); console.log(got.zip);
+		 * console.log(got.email); console.log(got.pass);
+		 * console.log(got.dateOfBirth);
+		 * 
+		 * if (got.altNumber === undefined) { got.altNumber = null; } var
+		 * parameter = "firstName=" + got.firstName + "&lastName=" +
+		 * got.lastName + "&dateOfBirth=" + got.dateOfBirth + "&phoneNumber=" +
+		 * got.phoneNumber + "&altNum=" + got.altNumber + "&address=" +
+		 * got.address + "&city=" + got.city + "&state=" + got.state + "&zip=" +
+		 * got.zip + "&email=" + got.email + "&password=" + got.pass;
+		 * console.log(parameter); if (XMLHttpRequest) { ajax = new
+		 * XMLHttpRequest(); } else { ajax = new
+		 * ActiveXobject("Microsoft.XHTTP"); } ajax.open("post", "reg-user",
+		 * true); ajax.setRequestHeader("Content-type",
+		 * "application/x-www-form-urlencoded"); ajax.onreadystatechange =
+		 * function() { if (this.readyState === 4 && this.status === 200) { //
+		 * console.log(this.responseText); if (this.responseText === "Network
+		 * Error") { alert("Network is not connected/Server error Try after
+		 * sometimes"); } // console.log("inserted into database"); } }
+		 * ajax.send(parameter);
+		 */
+	} else if (got === "Phone Number Taken") {
+		document.getElementById("number-error").innerHTML = got;
+		document.getElementById("altnum-error").innerHTML = got;
+		alert(got);
+	} else if (got === "Address Already Taken") {
+		alert(got);
+		document.getElementById("address-error").innerHTML = got;
+	} else if (got === "error") {
 		alert("Servor error occured\nPlease Try after sometimes")
+	} else if (got === "Network Error") {
+		alert("Network is not connected/Server error Try after sometimes");
 	}
 
 }
@@ -422,6 +452,8 @@ function redirectSignUp(received) {
 		alert(received);
 	} else if (received === "Error") {
 		alert("Server error occured try again after some times");
+	} else if (received == "Network error") {
+		alert("Network is not connected/Server error Try after sometimes");
 	}
 
 }

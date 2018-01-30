@@ -74,4 +74,10 @@ public class Credential {
 		this.status = status;
 	}
 
+	@Override
+	public String toString() {
+		return "Credential [email=" + email + ", password=" + password + ", authKey=" + authKey + ", userType="
+				+ userType + ", status=" + status + "]";
+	}
+
 }

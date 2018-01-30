@@ -16,52 +16,53 @@ import javax.mail.internet.MimeMultipart;
 
 public class EmailService {
 
-public static void send(String to, String subject, String body) {
-    Properties props = System.getProperties();
-    props.put("mail.smtp.starttls.enable", true);
-    props.put("mail.smtp.host", "smtp.gmail.com");
-    props.put("mail.smtp.user", "helpwithorphanea@gmail.com");
-    props.put("mail.smtp.password", "orphanage");
-    props.put("mail.smtp.port", "587");
-    props.put("mail.smtp.auth", true);
-    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+	public static boolean send(String to, String subject, String body) {
+		boolean status = true;
+		Properties props = System.getProperties();
+		props.put("mail.smtp.starttls.enable", true);
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.user", "helpwithorphanea@gmail.com");
+		props.put("mail.smtp.password", "orphanage");
+		props.put("mail.smtp.port", "587");
+		props.put("mail.smtp.auth", true);
+		props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
-    Session session = Session.getInstance(props,null);
-    MimeMessage message = new MimeMessage(session);
+		Session session = Session.getInstance(props, null);
+		MimeMessage message = new MimeMessage(session);
 
-    System.out.println("Port: "+session.getProperty("mail.smtp.port"));
+		System.out.println("Port: " + session.getProperty("mail.smtp.port"));
 
-    try {
-        InternetAddress from = new InternetAddress("helpwithorphane@gmail.com");
-        message.setSubject(subject);
-        message.setFrom(from);
-        message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+		try {
+			InternetAddress from = new InternetAddress("helpwithorphane@gmail.com");
+			message.setSubject(subject);
+			message.setFrom(from);
+			message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
-        Multipart multipart = new MimeMultipart("alternative");
+			Multipart multipart = new MimeMultipart("alternative");
 
-        BodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setText("some text to send");
+			BodyPart messageBodyPart = new MimeBodyPart();
+			messageBodyPart.setText("some text to send");
 
-        multipart.addBodyPart(messageBodyPart);
+			multipart.addBodyPart(messageBodyPart);
 
-        messageBodyPart = new MimeBodyPart();
-        String htmlMessage = body;
-        messageBodyPart.setContent(htmlMessage, "text/html");
+			messageBodyPart = new MimeBodyPart();
+			String htmlMessage = body;
+			messageBodyPart.setContent(htmlMessage, "text/html");
 
-        multipart.addBodyPart(messageBodyPart);
+			multipart.addBodyPart(messageBodyPart);
 
-        message.setContent(multipart);
+			message.setContent(multipart);
 
-        Transport transport = session.getTransport("smtp");
-        transport.connect("smtp.gmail.com", "helpwithorphane@gmail.com", "orphanage");
-        System.out.println("Transport: "+transport.toString());
-        transport.sendMessage(message, message.getAllRecipients());
+			Transport transport = session.getTransport("smtp");
+			transport.connect("smtp.gmail.com", "helpwithorphane@gmail.com", "orphanage");
+			System.out.println("Transport: " + transport.toString());
+			transport.sendMessage(message, message.getAllRecipients());
 
-
-    } catch (AddressException e) {
-        e.printStackTrace();
-    } catch (MessagingException e) {
-        e.printStackTrace();
-    }
-}
+		} catch (AddressException e) {
+			status = false;
+		} catch (MessagingException e) {
+			status = false;
+		}
+		return status;
+	}
 }
