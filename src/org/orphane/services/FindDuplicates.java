@@ -6,6 +6,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.orphane.model.Address;
+import org.orphane.model.NotifyUsers;
 import org.orphane.model.Orphanage;
 import org.orphane.model.RegularUsers;
 import org.orphane.util.HBUtil;
@@ -109,6 +110,23 @@ public class FindDuplicates {
 			e.printStackTrace();
 		}
 		System.out.println(status);
+		return status;
+	}
+
+	public static boolean notifyUsers(String mail) {
+		boolean status = true;
+		try {
+			SessionFactory sf = HBUtil.getSessionFactory();
+			Session ses = sf.openSession();
+			ses.beginTransaction();
+			NotifyUsers obj = ses.get(NotifyUsers.class, mail);
+			if (obj != null) {
+				status = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			status = false;
+		}
 		return status;
 	}
 }

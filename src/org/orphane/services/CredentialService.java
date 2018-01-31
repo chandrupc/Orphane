@@ -107,8 +107,10 @@ public class CredentialService {
 			Session ses = sf.openSession();
 			ses.beginTransaction();
 			Credential user = ses.get(Credential.class, email);
+			// System.out.println(user.getStatus().equals(UserStatus.ACTIVATED));
+			// System.out.println(user.getStatus().equals("ACTIVATED"));
 			if (user != null && email.equals(user.getEmail()) && password.equals(user.getPassword())
-					&& user.getStatus().equals("ACTIVATED")) {
+					&& user.getStatus().equals(UserStatus.ACTIVATED)) {
 				if (user.getAuthKey().isEmpty()) {
 					user.setAuthKey(AUTHIDGen.generateKey(30));
 					status = true;

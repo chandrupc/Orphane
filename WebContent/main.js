@@ -118,44 +118,79 @@ function returnStatus(response) {
 	}
 }
 
+/*---------------------------------------SUBSCRIBE FOR NOTIFICATIONS-----------------------------------*/
+function subscribe() {
+	var status = true;
+	var name = getValue("subscriber-name");
+	var email = getValue("email");
+	// console.log(name + " " + email);
+	if (checkState(name) === false || checkField(name) === false) {
+		dispError("name-error", userError, 1);
+		status = false;
+	}
+	if (checkEmail(email) === false) {
+		dispError("mail-error", userError, 0);
+		status = false;
+	}
+	if (status) {
+		// console.log("entered");
+		var ajax;
+		if (XMLHttpRequest) {
+			ajax = new XMLHttpRequest();
+		} else {
+			ajax = new ActiveXobject("Microsoft.XHTTP");
+		}
+		ajax.open("post", "notify-users", true);
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		ajax.onreadystatechange = function() {
+			if (this.readyState === 4 && this.status === 200) {
+				if (this.responseText === "error") {
+					alert("Server error plese try after some time")
+				} else if (this.responseText === "success") {
+					alert("Subscribed Successfully!!!\n\nYou will receive notification")
+				} else {
+					alert(this.responseText);
+				}
+			}
+		}
+		// console.log("name=" + name + "&mail=" + email);
+		ajax.send("username=" + name + "&mail=" + email);
+	}
+	return false;
+}
 /*---------------------------------------LOGIN FORM VALIDATION-----------------------------------*/
 
-function validateLogin(status) {
-	if (status == "true") {
-		return true;
-	} else {
-		var username = getValue("user-email");
-		var password = getValue("user-password");
-		if (checkEmail(username) === false) {
-			dispError("username-error", userError, 0);
-		}
+function validateLogin() {
+	// console.log("Success");
+	var username = getValue("user-email");
+	var password = getValue("user-password");
+	if (checkEmail(username) === false) {
+		dispError("username-error", userError, 0);
+	}
 
-		if (checkField(password) === false) {
-			dispError("password-error", passError, 0);
-		}
+	if (checkField(password) === false) {
+		dispError("password-error", passError, 0);
+	}
 
-		if (checkEmail(username) === true && checkField(password) === false) {
-			dispError("password-error", passError, 1);
-		}
+	if (checkEmail(username) === true && checkField(password) === false) {
+		dispError("password-error", passError, 1);
+	}
 
-		if (checkEmail(username) && checkField(password)) {
-			var parameter = "email=" + username + "&pass=" + password;
-			ajaxRequest(loginCheck, "login", "post", parameter);
-		}
+	if (checkEmail(username) && checkField(password)) {
+		var parameter = "email=" + username + "&pass=" + password;
+		ajaxRequest(loginCheck, "login", "post", parameter);
 	}
 	return false;
 }
 
 function loginCheck(message) {
-	// console.log(message);
 	if (message === "invalid user") {
 		dispError("username-error", userError, 3);
 	} else if (message === "account not activated") {
 		dispError("username-error", userError, 4);
-	} else if ("Incorrect Password") {
+	} else if (message === "Incorrect Password") {
 		alert("Incorrect password")
-	} else if (message === "success") {
-		validateLogin("true");
 	}
 }
 
@@ -275,35 +310,7 @@ function regCheckDetails() {
 
 function regSignUp(got) {
 	// console.log(got);
-	var ajax;
-	if (got === "success") {
-		location.href = "index.html";
-		/*
-		 * console.log("success"); console.log(got.firstName);
-		 * console.log(got.lastName); console.log(got.phoneNumber);
-		 * console.log(got.altNumber); console.log(got.address);
-		 * console.log(got.city); console.log(got.state); console.log(got.zip);
-		 * console.log(got.email); console.log(got.pass);
-		 * console.log(got.dateOfBirth);
-		 * 
-		 * if (got.altNumber === undefined) { got.altNumber = null; } var
-		 * parameter = "firstName=" + got.firstName + "&lastName=" +
-		 * got.lastName + "&dateOfBirth=" + got.dateOfBirth + "&phoneNumber=" +
-		 * got.phoneNumber + "&altNum=" + got.altNumber + "&address=" +
-		 * got.address + "&city=" + got.city + "&state=" + got.state + "&zip=" +
-		 * got.zip + "&email=" + got.email + "&password=" + got.pass;
-		 * console.log(parameter); if (XMLHttpRequest) { ajax = new
-		 * XMLHttpRequest(); } else { ajax = new
-		 * ActiveXobject("Microsoft.XHTTP"); } ajax.open("post", "reg-user",
-		 * true); ajax.setRequestHeader("Content-type",
-		 * "application/x-www-form-urlencoded"); ajax.onreadystatechange =
-		 * function() { if (this.readyState === 4 && this.status === 200) { //
-		 * console.log(this.responseText); if (this.responseText === "Network
-		 * Error") { alert("Network is not connected/Server error Try after
-		 * sometimes"); } // console.log("inserted into database"); } }
-		 * ajax.send(parameter);
-		 */
-	} else if (got === "Phone Number Taken") {
+	if (got === "Phone Number Taken") {
 		document.getElementById("number-error").innerHTML = got;
 		document.getElementById("altnum-error").innerHTML = got;
 		alert(got);
@@ -437,10 +444,8 @@ function orpCheckDetails() {
 /*---------------------------------------ORPHANAGE SIGN UP FORM REDIRECT-----------------------------------*/
 
 function redirectSignUp(received) {
-	console.log(received);
-	if (received === "success") {
-		location.href = "index.html";
-	} else if (received === "Phone Number found") {
+	// console.log(received);
+	if (received === "Phone Number found") {
 		document.getElementById('orpnumber-error').innerHTML = received;
 		document.getElementById('orpaltnum-error').innerHTML = received;
 		alert(received);
@@ -545,6 +550,8 @@ function clearError(idName) {
 	case "orppass-error":
 	case "orpcheckpass-error":
 	case "orpwebsite-error":
+	case "name-error":
+	case "mail-error":
 		document.getElementById(idName).innerHTML = "";
 		break;
 	}

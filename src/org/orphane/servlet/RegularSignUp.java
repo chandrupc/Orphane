@@ -100,7 +100,8 @@ public class RegularSignUp extends HttpServlet {
 					 * ",\"email\" :" + '"' + email + '"' + ",\"pass\" :" +
 					 * '"' + pass + '"' + "}";
 					 */
-					out.write("success");
+					request.getRequestDispatcher("/orphane/index.html").forward(request, response);
+					// out.write("success");
 				} else {
 					// out.write("{ \"message\" :" + '"' + message + '"' + "}");
 					out.write(message);

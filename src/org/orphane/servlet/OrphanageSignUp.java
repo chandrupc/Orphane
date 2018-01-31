@@ -81,7 +81,8 @@ public class OrphanageSignUp extends HttpServlet {
 						Credential credential = CredentialService.getUser(orphanageMail);
 						orp.setCredential(credential);
 						SaveModels.addOrphanage(orp);
-						out.write("success");
+						// out.write("success");
+						request.getRequestDispatcher("/orphane/index.html").forward(request, response);
 					} else {
 						out.write("Network error");
 					}

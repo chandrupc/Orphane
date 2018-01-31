@@ -34,14 +34,19 @@ public class LoginServlet extends HttpServlet {
 			// System.out.println(email+" "+pass);
 			Credential user = CredentialService.getUser(email);
 			if (user != null) {
+				// System.out.println("entered");
 				if (pass.equals(user.getPassword())) {
+					// System.out.println("entered");
 					boolean status = CredentialService.validateUser(email, pass);
+					// System.out.println(status);
 					if (status == false) {
 						out.write("account not activated");
 					} else if (status) {
-						out.write("success");
+						request.getRequestDispatcher("/index.html").forward(request, response);
+						// out.write("success");
 					}
 				} else {
+					System.out.println("error");
 					out.write("Incorrect Password");
 				}
 			} else if (user == null) {

@@ -17,8 +17,11 @@ public class NotifyUsers {
 	@Column(name = "email", length = 50, nullable = false)
 	public String email;
 
+	@Column(name = "username", length = 30, nullable = false)
+	public String name;
+
 	@Enumerated(EnumType.STRING)
-	@Column(name = "user_status",length = 20, nullable = false)
+	@Column(name = "user_status", length = 20, nullable = false)
 	public SubscriptionStatus status;
 
 	public SubscriptionStatus getStatus() {
@@ -35,6 +38,14 @@ public class NotifyUsers {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
