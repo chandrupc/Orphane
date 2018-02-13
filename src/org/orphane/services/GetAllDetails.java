@@ -14,14 +14,15 @@ import org.orphane.model.Trustee;
 import org.orphane.util.HBUtil;
 
 @SuppressWarnings("unchecked")
-public class GetAll {
+public class GetAllDetails {
 
 	public static List<Orphanage> getOrphanages() {
 		List<Orphanage> orphanages = null;
 		try {
 			Session ses = HBUtil.getSessionFactory().openSession();
 			ses.beginTransaction();
-			Query query = ses.createQuery("from Orphanage");
+			Query query = ses
+					.createQuery("from Orphanage where id not in (select o.orpId from RegularUserOrphanages o)");
 			orphanages = query.getResultList();
 			ses.close();
 		} catch (Exception e) {
@@ -71,8 +72,8 @@ public class GetAll {
 		}
 		return cardDetails;
 	}
-	
-	public static List<NotifyUsers> getNotifyUsers(){
+
+	public static List<NotifyUsers> getNotifyUsers() {
 		List<NotifyUsers> notifyUsers = null;
 		try {
 			Session ses = HBUtil.getSessionFactory().openSession();
@@ -85,8 +86,8 @@ public class GetAll {
 		}
 		return notifyUsers;
 	}
-	
-	public static List<FileDetails> getFileDetails(){
+
+	public static List<FileDetails> getFileDetails() {
 		List<FileDetails> fileDetails = null;
 		try {
 			Session ses = HBUtil.getSessionFactory().openSession();
@@ -98,5 +99,55 @@ public class GetAll {
 			e.printStackTrace();
 		}
 		return fileDetails;
+	}
+
+	public static List<String> getOrphanageState() {
+		List<String> orphanages = null;
+		try {
+			Session ses = HBUtil.getSessionFactory().openSession();
+			ses.beginTransaction();
+			Query query = ses.createQuery("select distinct address.state from Orphanage");
+			orphanages = query.getResultList();
+			ses.getTransaction().commit();
+			ses.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return orphanages;
+	}
+
+	public static List<Orphanage> fetchSelectedOrphanageState(String stateName) {
+		List<Orphanage> orphanages = null;
+		try {
+			Session ses = HBUtil.getSessionFactory().openSession();
+			ses.beginTransaction();
+			Query query = ses.createQuery(
+					"select o.id,o.name,o.address.state,o.credential.email from Orphanage o where address.state = :state_name and credential.status = 'ACTIVATED' and id not in (select orpId from RegularUserOrphanages)");
+			query.setParameter("state_name", stateName);
+			orphanages = query.getResultList();
+			ses.getTransaction().commit();
+			ses.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return orphanages;
+	}
+
+	public static List<Orphanage> fetchAddedOrphanageState(String stateName, Long regularId) {
+		List<Orphanage> orphanages = null;
+		try {
+			Session ses = HBUtil.getSessionFactory().openSession();
+			ses.beginTransaction();
+			Query query = ses.createQuery(
+					"select o.id,o.name,o.address.state,o.credential.email from Orphanage o where address.state = :state_name and credential.status = 'ACTIVATED' and id in (select orpId from RegularUserOrphanages where regId = :regularId)");
+			query.setParameter("state_name", stateName);
+			query.setParameter("regularId", regularId);
+			orphanages = query.getResultList();
+			ses.getTransaction().commit();
+			ses.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return orphanages;
 	}
 }

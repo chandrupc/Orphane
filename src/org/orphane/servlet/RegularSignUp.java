@@ -43,7 +43,7 @@ public class RegularSignUp extends HttpServlet {
 				String fname = request.getParameter("firstName");
 				String lname = request.getParameter("lastName");
 				String phoneNumber = request.getParameter("phoneNumber");
-				String altNum = request.getParameter("altNumber");
+				String altNum = request.getParameter("altNum");
 				String regAddress = request.getParameter("address");
 				String city = request.getParameter("city");
 				String state = request.getParameter("state");
@@ -100,8 +100,9 @@ public class RegularSignUp extends HttpServlet {
 					 * ",\"email\" :" + '"' + email + '"' + ",\"pass\" :" +
 					 * '"' + pass + '"' + "}";
 					 */
-					request.getRequestDispatcher("/orphane/index.html").forward(request, response);
-					// out.write("success");
+					// request.getRequestDispatcher("/index.html").forward(request,
+					// response);
+					out.write("success");
 				} else {
 					// out.write("{ \"message\" :" + '"' + message + '"' + "}");
 					out.write(message);

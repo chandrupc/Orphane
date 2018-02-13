@@ -5,15 +5,17 @@ var userError = [ "Enter a valid email-id", "Enter a valid first-name",
 		"Email-id doesnot exists please sign up to login",
 		"Account not activated", "Enter a valid orphanage name" ];
 var passError = [ "Password cannot be empty", "Please enter the password",
-		"Password mismatch", "Minimum 8 characters" ];
+		"Password mismatch", "Minimum 8 characters",
+		"New and Confirm Password mismatch", "Current Password mismatch",
+		"Password Updated" ];
 var phoneNumberError = [ "Please enter a 10 digit valid mobile number",
 		"Alternate number is same as primary" ];
 var addressError = [ "Please fill out the address properly",
 		"Please enter valid city", "Please enter valid state name",
-		" Please enter valid zipcode" ];
+		" Please enter valid zipcode", "Address already taken" ];
 var lengthError = [ "Maximum 30 characters", "Maximum 255 characters",
 		"Maximum 50 characters" ];
-var websiteError = [ "Please enter a valid website" ]
+var websiteError = [ "Please enter a valid website", "Website already taken" ]
 var emailStatus = [ "Email available", "Email id already taken" ]
 
 /*---------------------------------------REGEX-----------------------------------*/
@@ -29,7 +31,7 @@ var webReg = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\
 /*---------------------------------------NAVIGATION TAB-----------------------------------*/
 
 function login() {
-	location.href = "login.html";
+	location.href = "login-user";
 }
 
 /*---------------------------------------ORPHANAGE USERS SIGN UP FORM RESET-----------------------------------*/
@@ -56,7 +58,7 @@ function dispError(idName, arrName, index) {
 function ajaxRequest(functionName, url, method, parameters) {
 	var ajax;
 	if (XMLHttpRequest) {
-		ajax = new XMLHttpRequest()
+		ajax = new XMLHttpRequest();
 	} else {
 		ajax = new ActiveXobject("Microsoft.XMLHTTP");
 	}
@@ -179,18 +181,24 @@ function validateLogin() {
 
 	if (checkEmail(username) && checkField(password)) {
 		var parameter = "email=" + username + "&pass=" + password;
-		ajaxRequest(loginCheck, "login", "post", parameter);
+		ajaxRequest(loginCheck, "login-user", "post", parameter);
 	}
 	return false;
 }
 
 function loginCheck(message) {
+	// console.log(message);
+	if (message === "no cookies") {
+		location.href = "login.html";
+	}
 	if (message === "invalid user") {
 		dispError("username-error", userError, 3);
 	} else if (message === "account not activated") {
 		dispError("username-error", userError, 4);
 	} else if (message === "Incorrect Password") {
 		alert("Incorrect password")
+	} else if (message === "success") {
+		location.href = "orphanage.jsp";
 	}
 }
 
@@ -321,6 +329,8 @@ function regSignUp(got) {
 		alert("Servor error occured\nPlease Try after sometimes")
 	} else if (got === "Network Error") {
 		alert("Network is not connected/Server error Try after sometimes");
+	} else if (got === "success") {
+		location.href = "index.html";
 	}
 
 }
@@ -460,9 +470,10 @@ function redirectSignUp(received) {
 	} else if (received == "Network error") {
 		alert("Network is not connected/Server error Try after sometimes");
 	}
-
+	if (received === "success") {
+		location.href = "login.html";
+	}
 }
-
 /*---------------------------------------REGEX TESTS -----------------------------------*/
 
 function checkState(state) {
@@ -557,6 +568,60 @@ function clearError(idName) {
 	}
 }
 
+/*---------------------------------------FORGOT PASSWORD-----------------------------------*/
+
+function sendForgotMail() {
+	var mail = getValue("mailId");
+	if (checkField(mail) && checkEmail(mail)) {
+		var parameter = "mail=" + mail;
+		ajaxRequest(forgotPass, "forgot-pass", "post", parameter);
+	} else {
+		alert("Error occured Provide valid details");
+	}
+	return false;
+}
+function forgotPass(message) {
+	console.log(message === "success");
+	if (message === "success") {
+		alert("Reset Link has been sent to your Mail");
+		location.href = "login.html";
+	} else if (message === "error") {
+		alert("Server Error\n\nPlease try after some time");
+	}
+}
+
+/*---------------------------------------New Password Validation-----------------------------------*/
+
+function changePassDisable() {
+	document.getElementById("mail-id").disabled = true;
+}
+function checkNewPassword() {
+	var mail = getValue("mailId");
+	var pass1 = getValue("newPassword1");
+	var pass2 = getValue("newPassword2");
+	if (checkField(pass1) && checkField(pass2)) {
+		if (pass1 == pass2) {
+			var parameters = "mail=" + mail + "&pass1=" + pass1 + "&pass2="
+					+ pass2;
+			ajaxRequest(loginRedirect, "change-password", "post", parameters);
+		} else if (pass1 != pass2) {
+			alert("Password Mismatch");
+		}
+	}
+	return false;
+}
+
+function loginRedirect(message) {
+	console.log(message);
+	if (message === "success") {
+		alert("Password updated successfully");
+		location.href = "login.html";
+	}
+	if (message === "No user") {
+		alert("No such user exists");
+	}
+}
+
 /* onkeyup functions */
 
 /*---------------------------------------CONDITION CHECKERS-----------------------------------*/
@@ -626,4 +691,512 @@ function stateLength(idName, errorTag) {
 	} else {
 		document.getElementById(errorTag).innerHTML = '';
 	}
+}
+
+/*---------------------------------------ORPHANAGE PROFILE JAVASCRIPT-----------------------------------*/
+
+function enable() {
+	document.getElementById("inputPhoneNumber").disabled = false;
+	document.getElementById("inputAltPhoneNumber").disabled = false;
+	document.getElementById("inputAddress").disabled = false;
+	document.getElementById("inputCity").disabled = false;
+	document.getElementById("inputState").disabled = false;
+	document.getElementById("inputZip").disabled = false;
+	document.getElementById("updateButton").hidden = false;
+	document.getElementById("cancelButton").hidden = false;
+}
+
+function validate() {
+	clearError("number-error");
+	clearError("altnum-error");
+	clearError("address-error");
+	var valid = true;
+	var email = getValue("inputEmail");
+	var phoneNumber = getValue("inputPhoneNumber");
+	var altNumber = getValue("inputAltPhoneNumber");
+	var address = getValue("inputAddress");
+	var city = getValue("inputCity");
+	var state = getValue("inputState");
+	var zip = getValue("inputZip");
+
+	if (checkPhoneNumber(phoneNumber) === false) {
+		dispError("number-error", phoneNumberError, 0);
+		valid = false;
+	}
+	if (checkField(altNumber)) {
+		if (checkPhoneNumber(altNumber) === false) {
+			dispError("altnum-error", phoneNumberError, 0);
+			valid = false;
+		}
+	}
+	if (phoneNumber === altNumber && (checkField(altNumber))
+			&& (checkField(phoneNumber))) {
+		dispError("number-error", phoneNumberError, 1);
+		dispError("altnum-error", phoneNumberError, 1);
+		valid = false;
+	}
+	if (checkAddress(address) === false) {
+		dispError("address-error", addressError, 0);
+		valid = false;
+	}
+
+	if (checkState(city) === false || city === "" || city === null) {
+		dispError("city-error", addressError, 1);
+		valid = false;
+	}
+
+	if (checkState(state) === false || state === "" || state === null) {
+		dispError("state-error", addressError, 2);
+		valid = false;
+	}
+
+	if (checkZip(zip) === false) {
+		dispError("zip-error", addressError, 3);
+	}
+	if (valid) {
+		var ajax, parameter;
+		if (XMLHttpRequest) {
+			ajax = new XMLHttpRequest();
+		} else {
+			ajax = new ActiveXobject("Microsoft.XHTTP");
+		}
+		ajax.open("post", "updateuserprofile", true);
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		parameter = "email=" + email + "&phoneNumber=" + phoneNumber
+				+ "&altNum=" + altNumber + "&address=" + address + "&city="
+				+ city + "&state=" + state + "&zip=" + zip;
+		ajax.onreadystatechange = function() {
+			if (this.readyState === 4 && this.status === 200) {
+				console.log(this.responseText);
+				if (this.responseText === "NUMBER TAKEN") {
+					dispError("number-error", phoneNumberError, 2);
+				} else if (this.responseText === "ALT NUMBER TAKEN") {
+					dispError("altnum-error", phoneNumberError, 2);
+				} else if (this.responseText === "ADDRESS TAKEN") {
+					dispError("address-error", addressError, 4);
+				} else if (this.responseText === "SUCCESS") {
+					disable();
+				} else {
+					alert("Unable to Update")
+				}
+			}
+		}
+		ajax.send(parameter);
+	} else {
+		window.alert("Enter valid values");
+	}
+	return valid;
+}
+
+function disable() {
+	document.getElementById("inputPhoneNumber").disabled = true;
+	document.getElementById("inputAltPhoneNumber").disabled = true;
+	document.getElementById("inputAddress").disabled = true;
+	document.getElementById("inputCity").disabled = true;
+	document.getElementById("inputState").disabled = true;
+	document.getElementById("inputZip").disabled = true;
+	document.getElementById("updateButton").hidden = true;
+	document.getElementById("cancelButton").hidden = true;
+}
+
+/*---------------------------------------REGULAR PROFILE SHOW ORPHANAGES-----------------------------------*/
+
+function changePage() {
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("get", "showOrphanages.jsp", true);
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			document.getElementById("home").innerHTML = this.responseText;
+		}
+	}
+	ajax.send();
+}
+
+/*---------------------------------------REGULAR PROFILE SHOW ADDED ORPHANAGES-----------------------------------*/
+
+function loadShowOrp() {
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("get", "showOrp.jsp", true);
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			document.getElementById("home").innerHTML = this.responseText;
+		}
+	}
+	ajax.send();
+}
+
+/*---------------------------------------REGULAR PROFILE SHOW ADDED ORPHANAGES BY STATE-----------------------------------*/
+
+function fetchByStateInOrp(anchor) {
+	// console.log(anchor);
+	var selectedState = anchor.getAttribute('value');
+	// console.log(selectedState);
+	var splitContent = selectedState.split("-");
+	// console.log(splitContent);
+	var state = splitContent[0];
+	var regId = splitContent[1];
+	// console.log(state + " " + regId);
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("post", "fetch-added-details", true);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			var arr = JSON.parse(this.responseText);
+			console.log(arr);
+			var setContent = "";
+			for (i = 1; i <= arr.length; i++) {
+				setContent += "<tr class='table-secondary'>"
+						+ "<th scope='row'>"
+						+ i
+						+ "</th>"
+						+ "<td id='name'>"
+						+ arr[i - 1][1]
+						+ "</td>"
+						+ "<td id='state'>"
+						+ arr[i - 1][2]
+						+ "</td>"
+						+ "<td onclick='deleteOrphanage("
+						+ '"'
+						+ arr[i - 1][0]
+						+ '"'
+						+ ")'"
+						+ "class='float-right'><button class='btn btn-danger'>Delete</button></td>"
+						+ "</tr>";
+				// console.log(setContent);
+			}
+			document.getElementById("setSelectedFilter").innerHTML = setContent;
+		}
+	}
+	ajax.send("state=" + state + "&regId=" + regId);
+}
+
+/*---------------------------------------REGULAR PROFILE SHOW ORPHANAGES BY STATE-----------------------------------*/
+
+function fetchByState(anchor) {
+	var selectedState = anchor.getAttribute('value');
+	// console.log(selectedState);
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("post", "fetch-details", true);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			var arr = JSON.parse(this.responseText);
+			console.log(arr);
+			var setContent = "";
+			for (i = 1; i <= arr.length; i++) {
+				setContent += "<tr class='table-secondary'>"
+						+ "<th scope='row'>"
+						+ i
+						+ "</th>"
+						+ "<td id='name'>"
+						+ arr[i - 1][1]
+						+ "</td>"
+						+ "<td id='state'>"
+						+ arr[i - 1][2]
+						+ "</td>"
+						+ "<td onclick='addOrphanage("
+						+ '"'
+						+ arr[i - 1][1]
+						+ ','
+						+ arr[i - 1][2]
+						+ '"'
+						+ ")'"
+						+ "class='float-right'><button class='btn btn-success'>Add</button></td>"
+						+ "</tr>";
+				// console.log(setContent);
+			}
+			document.getElementById("setFilter").innerHTML = setContent;
+		}
+	}
+	ajax.send("name=" + selectedState);
+}
+
+/*---------------------------------------ADD ORPHANAGES TO REGULAR USERS-----------------------------------*/
+
+function addOrphanage(clickedRow) {
+	var content = clickedRow.split(",");
+	var state = content[1];
+	var name = content[0];
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("post", "add-orphanage", true);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			var response = this.responseText;
+			if (response === "error") {
+				alert("Error occured please try after sometimes");
+			} else if (response === "success") {
+				alert("Successfully added");
+				changePage();
+			}
+		}
+	}
+	var parameter = "orpName=" + name + "&orpState=" + state;
+	// console.log(parameter);
+	ajax.send(parameter);
+}
+
+/*---------------------------------------DELETE ORPHANAGES TO REGULAR USERS-----------------------------------*/
+
+function deleteOrphanage(id) {
+	// console.log(id);var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("post", "delete-orp-reg-maintenance", true);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			loadShowOrp();
+		}
+	}
+	ajax.send("id=" + id);
+}
+
+/*---------------------------------------DELETE REGULAR USER PROFILE-----------------------------------*/
+
+function deleteAccount(email) {
+	console.log(email);
+	var status = confirm("This will leads to permanently delete your profile");
+	if (status) {
+		var ajax;
+		if (XMLHttpRequest) {
+			ajax = new XMLHttpRequest();
+		} else {
+			ajax = new ActiveXobject("Microsoft.XMLHTTP");
+		}
+		ajax.open("post", "delete-reg-profile", true);
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		ajax.onreadystatechange = function() {
+			if (this.readyState === 4 && this.status === 200) {
+				console.log("success");
+				if (this.responseText === "success") {
+					location.href = "index.html";
+				} else if (this.responseText === "error") {
+					alert("Server error occured\n Please try after some times");
+				}
+			}
+		}
+		ajax.send("email=" + email);
+	}
+}
+
+function deleteOrpAccount(email) {
+	console.log(email);
+	var status = confirm("This will leads to permanently delete your profile");
+	if (status) {
+		var ajax;
+		if (XMLHttpRequest) {
+			ajax = new XMLHttpRequest();
+		} else {
+			ajax = new ActiveXobject("Microsoft.XMLHTTP");
+		}
+		ajax.open("post", "delete-orp-profile", true);
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		ajax.onreadystatechange = function() {
+			if (this.readyState === 4 && this.status === 200) {
+				console.log(this.responseText);
+				if (this.responseText === "success") {
+					location.href = "index.html";
+				} else if (this.responseText === "error") {
+					alert("Server error occured\n Please try after some times");
+				}
+			}
+		}
+		ajax.send("email=" + email);
+	}
+}
+
+/*-----------------------------USERPROFILE PASSWORD UPDATION-------------------------------*/
+
+function updatePassword(check) {
+	clearError("pass-error");
+	var email;
+	if (check === 1) {
+		email = getValue("inputOrpEmail");
+	} else {
+		email = getValue("inputEmail");
+	}
+	var curpassword = getValue("currentPassword");
+	var newpassword = getValue("newPassword");
+	var conpassword = getValue("confirmPassword");
+	if (conpassword === newpassword) {
+		var ajax, parameter;
+		if (XMLHttpRequest) {
+			ajax = new XMLHttpRequest();
+		} else {
+			ajax = new ActiveXobject("Microsoft.XHTTP");
+		}
+		ajax.open("post", "updatepassword", true);
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		parameter = "email=" + email + "&currentPassword=" + curpassword
+				+ "&newPassword=" + newpassword;
+		ajax.onreadystatechange = function() {
+			if (this.readyState === 4 && this.status === 200) {
+				console.log(this.responseText);
+				if (this.responseText === "CURRENT PASSWORD MISMATCH") {
+					document.getElementById("pass-error").style.color = "red";
+					dispError("pass-error", passError, 5);
+					return false;
+				} else if (this.responseText === "SUCCESS") {
+					document.getElementById("pass-error").style.color = "green";
+					dispError("pass-error", passError, 6);
+					return true;
+				}
+			}
+		}
+		ajax.send(parameter);
+	} else {
+		document.getElementById("pass-error").style.color = "red";
+		dispError("pass-error", passError, 4);
+		return false;
+	}
+}
+
+/*----------------------------ORPHANAGE PROFILE UPDATION----------------------*/
+
+function validateOrphanageProfile() {
+	clearError("number-error");
+	clearError("altnum-error");
+	clearError("address-error");
+	clearError("orpwebsite-error");
+	var valid = true;
+	var email = getValue("inputOrpEmail");
+	var website = getValue("inputWebsite");
+	var phoneNumber = getValue("inputOrpPhoneNumber");
+	var altNumber = getValue("inputOrpAltPhoneNumber");
+	var address = getValue("inputOrpAddress");
+	var city = getValue("inputOrpCity");
+	var state = getValue("inputOrpState");
+	var zip = getValue("inputOrpZip");
+
+	if (checkPhoneNumber(phoneNumber) === false) {
+		dispError("number-error", phoneNumberError, 0);
+		valid = false;
+	}
+	if (website !== "" && website !== null) {
+		if (checkWebsite(website) === false) {
+			dispError("orpwebsite-error", websiteError, 0);
+			valid = false;
+		}
+	}
+	if (checkField(altNumber)) {
+		if (checkPhoneNumber(altNumber) === false) {
+			dispError("altnum-error", phoneNumberError, 0);
+			valid = false;
+		}
+	}
+	if (phoneNumber === altNumber && (checkField(altNumber))
+			&& (checkField(phoneNumber))) {
+		dispError("number-error", phoneNumberError, 1);
+		dispError("altnum-error", phoneNumberError, 1);
+		valid = false;
+	}
+	if (checkAddress(address) === false) {
+		dispError("address-error", addressError, 0);
+		valid = false;
+	}
+
+	if (checkState(city) === false || city === "" || city === null) {
+		dispError("city-error", addressError, 1);
+		valid = false;
+	}
+
+	if (checkState(state) === false || state === "" || state === null) {
+		dispError("state-error", addressError, 2);
+		valid = false;
+	}
+
+	if (checkZip(zip) === false) {
+		dispError("zip-error", addressError, 3);
+	}
+	if (valid) {
+		var ajax, parameter;
+		if (XMLHttpRequest) {
+			ajax = new XMLHttpRequest();
+		} else {
+			ajax = new ActiveXobject("Microsoft.XHTTP");
+		}
+		ajax.open("post", "updateorphanageprofile", true);
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		parameter = "email=" + email + "&phoneNumber=" + phoneNumber
+				+ "&website=" + website + "&altNum=" + altNumber + "&address="
+				+ address + "&city=" + city + "&state=" + state + "&zip=" + zip;
+		ajax.onreadystatechange = function() {
+			if (this.readyState === 4 && this.status === 200) {
+				console.log(this.responseText);
+				if (this.responseText === "NUMBER TAKEN") {
+					dispError("number-error", phoneNumberError, 2);
+				} else if (this.responseText === "ALT NUMBER TAKEN") {
+					dispError("altnum-error", phoneNumberError, 2);
+				} else if (this.responseText === "ADDRESS TAKEN") {
+					dispError("address-error", addressError, 4);
+				} else if (this.responseText === "WEBSITE TAKEN") {
+					dispError("orpwebsite-error", websiteError, 1);
+				} else if (this.responseText === "SUCCESS") {
+					disableOrphanage();
+				} else {
+					alert("Unable to Update")
+				}
+			}
+		}
+		ajax.send(parameter);
+	}
+	return valid;
+}
+
+function enableOrphanage() {
+	document.getElementById("inputWebsite").disabled = false;
+	document.getElementById("inputOrpPhoneNumber").disabled = false;
+	document.getElementById("inputOrpAltPhoneNumber").disabled = false;
+	document.getElementById("inputOrpAddress").disabled = false;
+	document.getElementById("inputOrpCity").disabled = false;
+	document.getElementById("inputOrpState").disabled = false;
+	document.getElementById("inputOrpZip").disabled = false;
+	document.getElementById("updateButton").hidden = false;
+	document.getElementById("cancelButton").hidden = false;
+}
+
+function disableOrphanage() {
+	document.getElementById("inputWebsite").disabled = true;
+	document.getElementById("inputOrpPhoneNumber").disabled = true;
+	document.getElementById("inputOrpAltPhoneNumber").disabled = true;
+	document.getElementById("inputOrpAddress").disabled = true;
+	document.getElementById("inputOrpCity").disabled = true;
+	document.getElementById("inputOrpState").disabled = true;
+	document.getElementById("inputOrpZip").disabled = true;
+	document.getElementById("updateButton").hidden = true;
+	document.getElementById("cancelButton").hidden = true;
 }

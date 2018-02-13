@@ -29,7 +29,7 @@ public class ActivateAccount extends HttpServlet {
 				String email = request.getParameter("mail");
 				System.out.println(authkey + " " + email);
 				if (CredentialService.activateUser(email, authkey)) {
-					request.getRequestDispatcher("login.html").forward(request, response);
+					request.getRequestDispatcher("orphane/login.html").forward(request, response);
 				}
 			} catch (Exception e) {
 				disp = "<h1>ERROR OCCURED PLEASE TRY AFTER SOMETIMES</h1>";

@@ -7,12 +7,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.orphane.modelenum.UserStatus;
 import org.orphane.modelenum.UserType;
 
 @SuppressWarnings("deprecation")
 @Entity
 @Table(name = "orp_credential", catalog = "orphane")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "credential")
 @org.hibernate.annotations.Entity(dynamicUpdate = true)
 public class Credential {
 

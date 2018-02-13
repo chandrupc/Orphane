@@ -32,6 +32,7 @@
 		<property name="hibernate.cache.use_second_level_cache">true</property>
 		<property name="hibernate.cache.use_query_cache">true</property>
 		<property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
+		<!-- <property name="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheProvider</property> -->
 
 		<!-- Echo all executed SQL to stdout -->
 		<property name="show_sql">true</property>
@@ -49,6 +50,9 @@
 		<mapping class="org.orphane.model.FileDetails" />
 		<mapping class="org.orphane.model.Credential" />
 		<mapping class="org.orphane.model.Admin" />
+		<mapping class="org.orphane.model.OrphanagePost" />
+		<mapping class="org.orphane.model.RegularUserOrphanages" />
+
 	</session-factory>
 
 </hibernate-configuration>

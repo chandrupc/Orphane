@@ -6,6 +6,7 @@ import org.orphane.model.Events;
 import org.orphane.model.FileDetails;
 import org.orphane.model.NotifyUsers;
 import org.orphane.model.Orphanage;
+import org.orphane.model.RegularUserOrphanages;
 import org.orphane.model.RegularUsers;
 import org.orphane.model.Trustee;
 import org.orphane.util.HBUtil;
@@ -85,6 +86,18 @@ public class SaveModels {
 	}
 
 	public static void addTrustee(Trustee trustee) {
+		try {
+			Session session = HBUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+			session.save(trustee);
+			session.getTransaction().commit();
+			session.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void addRegularUserOrp(RegularUserOrphanages trustee) {
 		try {
 			Session session = HBUtil.getSessionFactory().openSession();
 			session.beginTransaction();

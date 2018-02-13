@@ -1,0 +1,62 @@
+input[type = text] {
+	border-color: #818c98;
+	border-width: 1px;
+}
+
+textarea {
+	border-color: #818c98!important;
+	border-width: 1px;
+	resize: none;
+}
+
+input[type = text]:focus {
+	border-color: #343a40;
+}
+
+textarea:focus {
+	border-color: #343a40!important;
+}
+
+button {
+	background-color: #33ff33;
+	color:white;
+	padding: 10px 25px;
+    text-decoration: none;
+	border-radius: 2px;
+	border:none;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color:#4dff4d;
+}
+
+li button {
+	color: white;
+	background-color:#343a40;
+	border-color: #343a40;
+	border-radius: 2px;
+	font-weight: 600;
+}
+li button:hover {
+	color: #343a40;
+	background-color: white;
+	border-color: #343a40;
+}
+
+li button:visited {
+	border-color: #343a40;
+}
+
+input[disabled=true], textarea[disabled=true] {
+	border-top-width: 0px;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 1px;
+	background-color: white!important;
+	resize: none;
+}
+
+span {
+	color : red;
+}

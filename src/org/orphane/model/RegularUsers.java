@@ -17,6 +17,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @SuppressWarnings("deprecation")
 @Entity
 @Table(name = "orp_reg_user", catalog = "orphane", uniqueConstraints = {
@@ -28,18 +31,11 @@ import javax.persistence.UniqueConstraint;
 		@AttributeOverride(name = "name", column = @Column(name = "first_name", nullable = false, length = 30)),
 		@AttributeOverride(name = "state", column = @Column(name = "reg_state", length = 50, nullable = false)) })
 @org.hibernate.annotations.Entity(dynamicUpdate = true)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "regularUser")
 public class RegularUsers extends Details {
 
 	@Column(name = "last_name", nullable = false, length = 30)
 	public String lastName;
-
-	public Date getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(Date dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
 
 	@Embedded
 	public Address address;
@@ -106,6 +102,12 @@ public class RegularUsers extends Details {
 
 	public void setDate(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	@Override
+	public String toString() {
+		return "RegularUsers [lastName=" + lastName + ", address=" + address + ", cardDetails=" + cardDetails
+				+ ", fileDetails=" + fileDetails + ", credential=" + credential + ", dateOfBirth=" + dateOfBirth + "]";
 	}
 
 }

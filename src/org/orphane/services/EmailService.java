@@ -21,7 +21,7 @@ public class EmailService {
 		Properties props = System.getProperties();
 		props.put("mail.smtp.starttls.enable", true);
 		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.user", "helpwithorphanea@gmail.com");
+		props.put("mail.smtp.user", "helpwithorphane@gmail.com");
 		props.put("mail.smtp.password", "orphanage");
 		props.put("mail.smtp.port", "587");
 		props.put("mail.smtp.auth", true);
@@ -59,8 +59,10 @@ public class EmailService {
 			transport.sendMessage(message, message.getAllRecipients());
 
 		} catch (AddressException e) {
+			e.printStackTrace();
 			status = false;
 		} catch (MessagingException e) {
+			e.printStackTrace();
 			status = false;
 		}
 		return status;
