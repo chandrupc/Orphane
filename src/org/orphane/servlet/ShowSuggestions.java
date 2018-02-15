@@ -2,6 +2,7 @@ package org.orphane.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -15,11 +16,14 @@ import org.orphane.services.FetchContent;
 
 import com.google.gson.Gson;
 
-@WebServlet("/fetch-details")
-public class FetchByState extends HttpServlet {
+/**
+ * Servlet implementation class ShowSuggestions
+ */
+@WebServlet("/show-suggestions")
+public class ShowSuggestions extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public FetchByState() {
+	public ShowSuggestions() {
 		super();
 	}
 
@@ -33,15 +37,17 @@ public class FetchByState extends HttpServlet {
 		try (PrintWriter out = response.getWriter()) {
 			try {
 				response.setContentType("application/json");
-				String stateName = request.getParameter("name");
-				List<Orphanage> orphanage = FetchContent.fetchSelectedOrphanageState(stateName);
-				out.write(new Gson().toJson(orphanage));
-
+				List<Orphanage> orp = FetchContent.getSubscribedOrphanage(Long.parseLong(request.getParameter("id")));
+				// System.out.println("Successfully fetched");
+				List<String> orpNames = new LinkedList<String>();
+				for (Orphanage each : orp) {
+					orpNames.add(each.getName() + "-" + each.getId() + '-' + each.getAddress().state);
+				}
+				out.write(new Gson().toJson(orpNames));
 			} catch (Exception e) {
+				out.write("error");
 				e.printStackTrace();
 			}
 		}
-
 	}
-
 }

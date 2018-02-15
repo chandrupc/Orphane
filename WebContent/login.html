@@ -31,10 +31,19 @@
 						id="username-error"></span>
 				</div>
 				<div id="user-pass" class="line-spacing">
-					<label for="user-password">Password</label> <input type="password"
-						onkeyup="clearError('password-error')" class="form-control"
-						id="user-password" placeholder="enter password here"
-						name="password"> <span id="password-error"></span>
+					<div class="row">
+						<div class="col">
+							<label for="user-password">Password</label> <input
+								type="password" onkeyup="clearError('password-error')"
+								class="form-control" id="user-password"
+								placeholder="enter password here" name="password">
+							<div>
+								<!--  <div class="col-2">
+									<img src="images/eye.png"> <span id="password-error"></span>
+								</div>-->
+							</div>
+						</div>
+					</div>
 				</div>
 				<div id="forgot-pass">
 					<a href="forgotpass.html">FORGOT PASSWORD?</a>

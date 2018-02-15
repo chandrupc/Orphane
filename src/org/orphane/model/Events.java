@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.orphane.modelenum.EventName;
 import org.orphane.modelenum.EventStatus;
@@ -30,29 +32,36 @@ public class Events {
 	@GeneratedValue(generator = "event_id_generator", strategy = GenerationType.TABLE)
 	@TableGenerator(name = "event_id_generator", table = "orp_event_id_gen", allocationSize = 1, initialValue = 100, catalog = "orphane", pkColumnName = "event_id", pkColumnValue = "value", valueColumnName = "cur_id")
 	@Column(name = "event_id")
-	public Integer eventId;
+	public Long eventId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "event_name", nullable = false, length = 50)
 	public EventName eventName;
 
-	@Column(name = "event_date", nullable = false, length = 50)
+	@Temporal(TemporalType.DATE)
+	@Column(name = "event_date", nullable = false)
 	public Date eventDate;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "event_status", nullable = false, length = 50)
 	public EventStatus eventStatus;
-	
-	
-	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	@JoinColumn(name = "reg_user_id",foreignKey = @ForeignKey(name = "orp_event_mgmt_reg_user_id_fk"))
+
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "reg_user_id", foreignKey = @ForeignKey(name = "orp_event_mgmt_reg_user_id_fk"), nullable = false)
 	public RegularUsers regularUsers;
 
-	public Integer getEventId() {
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "orp_id", foreignKey = @ForeignKey(name = "orp_event_mgmt_orp_id_fk"), nullable = false)
+	public Orphanage orphanage;
+
+	@Column(name = "event_description", nullable = true)
+	public String description;
+
+	public Long getEventId() {
 		return eventId;
 	}
 
-	public void setEventId(Integer eventId) {
+	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
 
@@ -62,6 +71,14 @@ public class Events {
 
 	public void setEventName(EventName eventName) {
 		this.eventName = eventName;
+	}
+
+	public Date getEventDate() {
+		return eventDate;
+	}
+
+	public void setEventDate(Date eventDate) {
+		this.eventDate = eventDate;
 	}
 
 	public EventStatus getEventStatus() {
@@ -80,13 +97,27 @@ public class Events {
 		this.regularUsers = regularUsers;
 	}
 
-	public Date getEventDate() {
-		return eventDate;
+	public Orphanage getOrphanage() {
+		return orphanage;
 	}
 
-	public void setEventDate(Date eventDate) {
-		this.eventDate = eventDate;
+	public void setOrphanage(Orphanage orphanage) {
+		this.orphanage = orphanage;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Override
+	public String toString() {
+		return "Events [eventId=" + eventId + ", eventName=" + eventName + ", eventDate=" + eventDate + ", eventStatus="
+				+ eventStatus + ", regularUsers=" + regularUsers + ", orphanage=" + orphanage + ", description="
+				+ description + "]";
+	}
 
 }

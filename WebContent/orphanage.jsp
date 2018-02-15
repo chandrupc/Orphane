@@ -25,6 +25,13 @@
 <link href="css/orphanage.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="css/Orpprofile.css">
 <script type="text/javascript" src="main.js"></script>
+<script type="text/javascript" src="jscript/link1.js"></script>
+<script type="text/javascript" src="jscript/link2.js"></script>
+<script type="text/javascript" src="jscript/link3.js"></script>
+<script type="text/javascript" src="jscript/link5.js"></script>
+<script type="text/javascript" src="jscript/link6.js"></script>
+<script type="text/javascript" src="jscript/link7.js"></script>
+<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
 </head>

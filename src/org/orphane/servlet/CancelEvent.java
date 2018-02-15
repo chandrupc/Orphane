@@ -2,7 +2,6 @@ package org.orphane.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,16 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.orphane.model.Orphanage;
-import org.orphane.services.FetchContent;
+import org.orphane.services.DeleteService;
 
-import com.google.gson.Gson;
-
-@WebServlet("/fetch-details")
-public class FetchByState extends HttpServlet {
+@WebServlet("/delete-event")
+public class CancelEvent extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public FetchByState() {
+	public CancelEvent() {
 		super();
 	}
 
@@ -32,16 +28,17 @@ public class FetchByState extends HttpServlet {
 			throws ServletException, IOException {
 		try (PrintWriter out = response.getWriter()) {
 			try {
-				response.setContentType("application/json");
-				String stateName = request.getParameter("name");
-				List<Orphanage> orphanage = FetchContent.fetchSelectedOrphanageState(stateName);
-				out.write(new Gson().toJson(orphanage));
-
+				String id = request.getParameter("id");
+				Long regId = Long.parseLong(id);
+				if (DeleteService.deleteEvent(regId)) {
+					out.write("success");
+				} else {
+					out.write("error");
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 }

@@ -1,3 +1,9 @@
+
+<%
+	// show orphanages page
+%>
+
+
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.util.List"%>
 <%@page import="org.orphane.services.GetAllDetails"%>
@@ -21,13 +27,10 @@
 	if (user == null) {
 		request.getRequestDispatcher("login.html").forward(request, response);
 	} else if (user != null) {
-		if (user.getUserType().equals(UserType.REGULAR) == false || user.getUserType() == null) {
-			response.sendRedirect("/orphanage.jsp");
-		}
 		reg = FetchContent.getRegUserDetails(user.getEmail());
 		id = reg.getId();
-		orp = FetchContent.getOrphanageById(reg.getId());
-		state = GetAllDetails.getOrphanageState();
+		orp = FetchContent.getSubscribedOrphanage(reg.getId());
+		state = GetAllDetails.getRegularUserSubscribedOrphanageState(reg.getId());
 		for (Orphanage each : orp) {
 			System.out.println(orp);
 		}
@@ -53,9 +56,8 @@
 				<button class="btn btn-success dropdown-toggle" type="button"
 					id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
 					aria-expanded="false">Filter By State</button>
-				<button type="button" onclick="changeSelectedPage()"
-					class="btn btn-success float-right" id="showButton">Show
-					All</button>
+				<button onclick="loadShowOrp()" class="btn btn-success float-right"
+					id="showButton">Show All</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 					<%
 						for (String each : state) {
@@ -89,7 +91,7 @@
 				<td id="name"><%=each.getName()%></td>
 				<td id="state"><%=each.getAddress().state%></td>
 				<td onclick='deleteOrphanage("<%=each.getId()%>")'
-					class="float-right"><button class="btn btn-danger">Delete</button></td>
+					class="float-right"><button class="btn btn-danger">Unfollow</button></td>
 			</tr>
 			<%
 				i++;

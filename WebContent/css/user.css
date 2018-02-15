@@ -64,3 +64,20 @@ footer {
 .btn {
 	cursor: pointer !important;
 }
+
+.results a p {
+	color: black;
+	font-weight: 400;
+	cursor: pointer;
+}
+
+.results a p:hover {
+	background: #80ff80;
+	color: black !important;
+}
+
+span {
+	color: #ff9980;
+	font-size: 15px;
+	display: block;
+}

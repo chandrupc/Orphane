@@ -17,7 +17,13 @@ var lengthError = [ "Maximum 30 characters", "Maximum 255 characters",
 		"Maximum 50 characters" ];
 var websiteError = [ "Please enter a valid website", "Website already taken" ]
 var emailStatus = [ "Email available", "Email id already taken" ]
-
+var names = [];
+var orphanageId = 0;
+var orphanageState = "";
+var eventError = [ "Select an event",
+		"Invalid orphanage name / \n Orphanage doesn't added yet",
+		"Date Required", "Past date is not accepted",
+		"Pre-Requisiton time is over Event can't be added" ];
 /*---------------------------------------REGEX-----------------------------------*/
 
 var nameReg = /^[a-zA-Z]+$/;
@@ -471,7 +477,7 @@ function redirectSignUp(received) {
 		alert("Network is not connected/Server error Try after sometimes");
 	}
 	if (received === "success") {
-		location.href = "login.html";
+		location.href = "index.html";
 	}
 }
 /*---------------------------------------REGEX TESTS -----------------------------------*/
@@ -542,6 +548,9 @@ function clearError(idName) {
 	case "fname-error":
 	case "lname-error":
 	case "number-error":
+	case "eventDateError":
+	case "eventNameError":
+	case "orpNameError":
 	case "altnum-error":
 	case "address-error":
 	case "city-error":
@@ -549,6 +558,7 @@ function clearError(idName) {
 	case "zip-error":
 	case "email-error":
 	case "pass-error":
+	case "suggest":
 	case "checkpass-error":
 	case "orpname-error":
 	case "orpnumber-error":
@@ -817,7 +827,6 @@ function changePage() {
 	}
 	ajax.send();
 }
-
 /*---------------------------------------REGULAR PROFILE SHOW ADDED ORPHANAGES-----------------------------------*/
 
 function loadShowOrp() {
@@ -876,7 +885,7 @@ function fetchByStateInOrp(anchor) {
 						+ arr[i - 1][0]
 						+ '"'
 						+ ")'"
-						+ "class='float-right'><button class='btn btn-danger'>Delete</button></td>"
+						+ "class='float-right'><button class='btn btn-danger'>UNFOLLOW</button></td>"
 						+ "</tr>";
 				// console.log(setContent);
 			}
@@ -922,7 +931,7 @@ function fetchByState(anchor) {
 						+ arr[i - 1][2]
 						+ '"'
 						+ ")'"
-						+ "class='float-right'><button class='btn btn-success'>Add</button></td>"
+						+ "class='float-right'><button class='btn btn-success'>FOLLOW</button></td>"
 						+ "</tr>";
 				// console.log(setContent);
 			}
@@ -952,7 +961,7 @@ function addOrphanage(clickedRow) {
 			if (response === "error") {
 				alert("Error occured please try after sometimes");
 			} else if (response === "success") {
-				alert("Successfully added");
+				alert("Successfully added\nYou will receive notifications if they post a need");
 				changePage();
 			}
 		}
@@ -1199,4 +1208,234 @@ function disableOrphanage() {
 	document.getElementById("inputOrpZip").disabled = true;
 	document.getElementById("updateButton").hidden = true;
 	document.getElementById("cancelButton").hidden = true;
+}
+
+/*----------------------------ORPHANAGE PROFILE UPDATION----------------------*/
+
+function loadEventJsp(id) {
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("get", "Event.jsp", true);
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			showSuggestion(id);
+			document.getElementById("home").innerHTML = this.responseText;
+		}
+	}
+	ajax.send();
+}
+
+/*----------------------------EVENT NAME SETTING----------------------*/
+
+function setEvent(anchor, id) {
+	// console.log(anchor);
+	var selected = anchor.getAttribute('value');
+	document.getElementById("eventName").innerHTML = selected;
+}
+
+/*----------------------------EVENT FORM SUGGESTION FOR ORPHANAGE NAME----------------------*/
+
+function showSuggestion(id) {
+	// console.log("success");
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("post", "show-suggestions", true);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			if (this.responseText === "error") {
+				alert("Please try after some times");
+			} else {
+				localStorage.clear();
+				localStorage.setItem("orphanageName", JSON
+						.parse(this.responseText));
+				fetchLocalStorage();
+			}
+		}
+	}
+	ajax.send("id=" + id);
+}
+
+/*----------------------------EVENT FORM LOCAL STORAGE FETCH CONTENT----------------------*/
+
+function fetchLocalStorage() {
+	var content = localStorage.getItem("orphanageName");
+	names = content.split(',');
+	// console.log(names);
+}
+
+/*----------------------------EVENT FORM SHOW ORPHANAGE SUGGESTIONS----------------------*/
+
+function showOrpNames() {
+	// console.log(names);
+	var textEntered = getValue("orpName");
+	var setContent = "<div class='results'>";
+	var len = 0;
+	for (var i = 0; i < names.length; i++) {
+		// console.log(names[i]);
+		if (names[i].toLowerCase().startsWith(textEntered.toLowerCase())) {
+			setContent += "<a class='col5' onclick='setOrp(this)' value='"
+					+ names[i] + "'><p>" + names[i].split('-')[0] + ", "
+					+ names[i].split('-')[2] + "</p></a>";
+			len++;
+			// console.log(names[i].split('-')[0]);
+		}
+		if (len > 5) {
+			break;
+		}
+	}
+	setContent += "</div>";
+	// console.log(setContent);
+	document.getElementById("suggest").innerHTML = setContent;
+}
+
+/*----------------------------EVENT FORM SET ORPHANAGE NAME----------------------*/
+
+function setOrp(clickedRow) {
+	var orpName = clickedRow.getAttribute('value');
+	document.getElementById("orpName").value = orpName.split('-')[0];
+	orphanageId = orpName.split('-')[1];
+	orphanageState = orpName.split('-')[2];
+	document.getElementById("suggest").innerHTML = "";
+}
+
+/*----------------------------EVENT FORM VALIDATION----------------------*/
+
+function validateEventDetails(regEmail) {
+	var status = true;
+	var eventDate = getValue("eventDate");
+	var orpName = getValue("orpName");
+	var eventName = document.getElementById("eventName").innerHTML;
+	var eventDescription = getValue("eventDescription");
+	var userDate = eventDate.split('-');
+	var date = new Date();
+	var curDay = date.getDate();
+	var curMonth = date.getMonth();
+	var curYear = date.getFullYear();
+	var hour = date.getHours();
+	var min = date.getMinutes();
+	// console.log(hour + ":" + min);
+	curMonth += 1;
+	// console.log(userDate);
+	// console.log(curDay + "-" + curMonth + "-" + curYear);
+	if (eventDate === "" || eventDate === null) {
+		dispError("eventDateError", eventError, 2);
+		status = false;
+	}
+	if (eventName === "--Select--") {
+		dispError("eventNameError", eventError, 0);
+		status = false;
+	}
+	if (names.indexOf(orpName + '-' + orphanageId + '-' + orphanageState) < 0) {
+		dispError("orpNameError", eventError, 1);
+		status = false;
+	}
+	if (parseInt(userDate[0]) < curYear) {
+		dispError("eventDateError", eventError, 3);
+		status = false;
+	} else if (parseInt(userDate[0]) === curYear) {
+		if (parseInt(userDate[1]) < curMonth) {
+			dispError("eventDateError", eventError, 3);
+			status = false;
+		} else if (parseInt(userDate[1]) === curMonth) {
+			if (parseInt(userDate[2]) < curDay) {
+				dispError("eventDateError", eventError, 3);
+				status = false;
+			} else if (parseInt(userDate[2]) === curDay) {
+				console.log("todays date" + userDate[2]);
+				if ((hour >= 6 && hour <= 10) && eventName === "BREAKFAST") {
+					dispError("eventNameError", eventError, 4);
+					status = false;
+				}
+				if ((hour > 10 && hour <= 15)
+						&& (eventName === "LUNCH" || eventName === "BREAKFAST")) {
+					dispError("eventNameError", eventError, 4);
+					status = false;
+				}
+				if (hour > 15) {
+					dispError("eventNameError", eventError, 4);
+					status = false;
+				}
+			}
+		}
+	}
+	if (status) {
+		var parameters = "eventDate=" + eventDate + "&eventName=" + eventName
+				+ "&orpId=" + orphanageId + "&description=" + eventDescription
+				+ "&regEmail=" + regEmail;
+		// console.log(parameters);
+		ajaxRequest(redirectEvent, "add-event", "post", parameters);
+
+	}
+	return status;
+}
+
+function redirectEvent(message) {
+	// console.log("message");
+	if (message === "success") {
+		orphanageId = 0;
+		localStorage.clear();
+		alert("Event has been added successfully");
+		location.href = "RegularUser.jsp";
+	} else if (message === "error") {
+		alert("Server error please try after sometimes");
+	} else {
+		alert(message);
+		location.href = "RegularUser.jsp";
+	}
+}
+
+/*----------------------------FUNCTION SHOW EVENTS----------------------*/
+
+function showEvents() {
+	// console.log("showEvents");
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("get", "showEvents.jsp", true);
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			document.getElementById("home").innerHTML = this.responseText;
+		}
+	}
+	ajax.send();
+}
+
+/*----------------------------DELETE EVENTS FROM SHOW EVENTS----------------------*/
+
+function deleteEvent(id) {
+	console.log(id);
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("post", "delete-event", true);
+	ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			var text = this.responseText;
+			console.log(text);
+			if (text === "success") {
+				alert("Cancelled successfully");
+				showEvents();
+			} else if (text === "error") {
+				alert("Server error try after some times");
+			}
+
+		}
+	}
+	ajax.send("id=" + id);
 }

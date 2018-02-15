@@ -1,3 +1,5 @@
+<%@page import="org.orphane.services.FetchContent"%>
+<%@page import="org.orphane.model.RegularUsers"%>
 <%@page import="org.orphane.modelenum.UserType"%>
 <%@page import="org.orphane.modelenum.UserStatus"%>
 <%@page import="org.orphane.services.GetAllDetails"%>
@@ -9,12 +11,13 @@
 	Credential user = CKUtil.fetchDetails(request);
 	List<Orphanage> orp = null;
 	List<String> state = null;
+	RegularUsers reg = FetchContent.getRegUserDetails(user.getEmail());
 	int i = 1;
 	if (user == null) {
 		request.getRequestDispatcher("login.html").forward(request, response);
 	} else if (user != null) {
 		orp = GetAllDetails.getOrphanages();
-		state = GetAllDetails.getOrphanageState();
+		state = GetAllDetails.getOrphanageState(reg.getId());
 	}
 %>
 <%
@@ -73,7 +76,7 @@
 				<td id="state"><%=each.getAddress().state%></td>
 				<td
 					onclick='addOrphanage("<%=each.getName() + "," + each.getAddress().state%>")'
-					class="float-right"><button class="btn btn-success">Add</button></td>
+					class="float-right"><button class="btn btn-success">Follow</button></td>
 			</tr>
 			<%
 				i++;

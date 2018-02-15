@@ -9,7 +9,7 @@
 <%@ page import="org.orphane.services.FetchContent"%>
 <%
 	Credential user = CKUtil.fetchDetails(request);
-	RegularUsers reg;
+	RegularUsers reg = null;
 	String fname = "";
 	String lname = "";
 	if (user == null) {
@@ -49,6 +49,12 @@
 <script type="text/javascript" src="jscript/link6.js"></script>
 <script type="text/javascript" src="jscript/link7.js"></script>
 <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+<style>
+.btn-outline-dark:hover, .btn-outline-dark:active {
+	background: none !important;
+	color: black;
+}
+</style>
 </head>
 <body>
 
@@ -83,8 +89,9 @@
 
 			<div class="row" style="margin: 5px;">
 				<div class="col">
-					<a onclick="changePage()"><img src="images/add.JPG"
-						alt="add Orphanges" style="width: 30px">Add Orphanages</a>
+					<a style="cursor: pointer;" onclick="changePage()"><img
+						src="images/add.JPG" alt="add Orphanges" style="width: 30px">Add
+						Orphanages</a>
 				</div>
 			</div>
 
@@ -102,10 +109,17 @@
 				</div>
 			</div>
 
-			<div class="row" style="margin: 5px;">
-				<div class="col">
-					<a href="#"><img src="images/add.JPG" alt="add Orphanges"
-						style="width: 30px">Add Events</a>
+			<div style="margin: 5px;">
+				<div class="row">
+					<div class="col">
+						<a href="#" onclick="loadEventJsp(<%=reg.getId()%>)"><img
+							src="images/add.JPG" alt="add Orphanges" style="width: 30px">Add
+							Events</a>
+					</div>
+					<div class="col-4">
+						<a href="#" onclick="showEvents()"
+							style="font-size: 25px; font-weight: 600">SHOW EVENTS</a>
+					</div>
 				</div>
 			</div>
 
@@ -116,19 +130,6 @@
 			</div>
 		</div>
 
-		<div id="shad3" class="container dotted shad" style="margin: 20px;">
-			<div class="row">
-				<div class="col">
-					<strong style="font-family: sans-serif">Notifications</strong>
-				</div>
-			</div>
-
-			<div class="row" style="margin: 20px;">
-				<div class="col">
-					<p style="color: #6b6b47; text-align: center;">Notifications.</p>
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<footer class="bg-dark">

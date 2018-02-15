@@ -2,18 +2,21 @@ package org.orphane.services;
 
 import java.util.List;
 
-import org.hibernate.Query;
+import javax.persistence.Query;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.orphane.model.Address;
+import org.orphane.model.Events;
 import org.orphane.model.NotifyUsers;
 import org.orphane.model.Orphanage;
 import org.orphane.model.RegularUsers;
 import org.orphane.util.HBUtil;
 
-@SuppressWarnings({ "deprecation", "unchecked", "rawtypes" })
 public class FindDuplicates {
 
+	// ------------------------------------------FORM VALIDATION DUPLICATE
+	// CHECKING---------------------------
 	public static String orphanage(Long phoneNo, String website, Address address, Long altNum) {
 		String status = null;
 		try {
@@ -21,6 +24,7 @@ public class FindDuplicates {
 			Session ses = sf.openSession();
 			ses.beginTransaction();
 			Query query = ses.createQuery("from Orphanage");
+			@SuppressWarnings("unchecked")
 			List<Orphanage> results = query.getResultList();
 			if (results != null) {
 				// System.out.println("entered");
@@ -70,6 +74,9 @@ public class FindDuplicates {
 		return status;
 	}
 
+	// ------------------------------------------FORM VALIDATION DUPLICATE
+	// CHECKING---------------------------
+
 	public static String RegularUsers(RegularUsers reg) {
 		String status = null;
 		try {
@@ -77,6 +84,7 @@ public class FindDuplicates {
 			Session ses = sf.openSession();
 			ses.beginTransaction();
 			Query query = ses.createQuery("from RegularUsers");
+			@SuppressWarnings("unchecked")
 			List<RegularUsers> results = query.getResultList();
 			if (results != null) {
 				for (RegularUsers each : results) {
@@ -144,6 +152,7 @@ public class FindDuplicates {
 			ses.beginTransaction();
 			Query query = ses.createQuery("from RegularUsers WHERE email_id != :mail");
 			query.setParameter("mail", email);
+			@SuppressWarnings("unchecked")
 			List<RegularUsers> results = query.getResultList();
 			System.out.println(results);
 			if (results != null) {
@@ -197,6 +206,8 @@ public class FindDuplicates {
 		return status;
 	}
 
+	/*--------------------------UPDATE ORPHANAGE PROFILE DUPLICATE FINDING-------------------*/
+
 	public static String inOrphanage(Orphanage orp, String email) {
 		String status = null;
 		try {
@@ -205,6 +216,7 @@ public class FindDuplicates {
 			ses.beginTransaction();
 			Query query = ses.createQuery("from Orphanage WHERE email_id != :mail");
 			query.setParameter("mail", email);
+			@SuppressWarnings("unchecked")
 			List<Orphanage> results = query.getResultList();
 			System.out.println(results);
 			if (results != null) {
@@ -224,7 +236,7 @@ public class FindDuplicates {
 							return status;
 						}
 					}
-					
+
 					else if (orp.getWebsite() != null && each.getWebsite() != null) {
 						if (each.getWebsite().equals(orp.getWebsite())) {
 							status = "websiteTaken";
@@ -263,6 +275,41 @@ public class FindDuplicates {
 			e.printStackTrace();
 		}
 		System.out.println(status);
+		return status;
+	}
+
+	// -------------------FIND EVENT DUPLICATES----------------------------
+
+	public static boolean checkEventFound(Events event) {
+		boolean status = false;
+		try {
+			Session ses = HBUtil.getSessionFactory().openSession();
+			ses.beginTransaction();
+			/*
+			 * Criteria criteria = ses.createCriteria(Events.class);
+			 * criteria.add(Restrictions.and(Restrictions.eq("eventDate",
+			 * event.getEventDate()), Restrictions.eq("eventName",
+			 * event.getEventName())));
+			 */
+			// criteria.add(Restrictions.eq("orphanage", event.getOrphanage()));
+			Query query = ses.createQuery(
+					"from Events where eventDate = :eventDate and eventName = :eventName and orphanage.id = :id and eventStatus = 'BOOKED'");
+			query.setParameter("eventName", event.getEventName());
+			query.setParameter("eventDate", event.getEventDate());
+			query.setParameter("id", event.getOrphanage().getId());
+			@SuppressWarnings("unchecked")
+			List<Events> result = (List<Events>) query.getResultList();
+			// System.out.println(result + "\n\n\n\n");
+			// System.out.println(result.size());
+			if (result == null || result.size() == 0) {
+				status = true;
+			}
+			ses.getTransaction().commit();
+			ses.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			status = false;
+		}
 		return status;
 	}
 }

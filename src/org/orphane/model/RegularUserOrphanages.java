@@ -48,4 +48,9 @@ public class RegularUserOrphanages {
 		this.regId = regId;
 	}
 
+	@Override
+	public String toString() {
+		return "RegularUserOrphanages [genId=" + genId + ", orpId=" + orpId + ", regId=" + regId + "]";
+	}
+
 }

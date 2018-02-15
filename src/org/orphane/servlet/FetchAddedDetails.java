@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.orphane.model.Orphanage;
-import org.orphane.services.GetAllDetails;
+import org.orphane.services.FetchContent;
 
 import com.google.gson.Gson;
 
@@ -50,7 +50,7 @@ public class FetchAddedDetails extends HttpServlet {
 				response.setContentType("application/json");
 				String stateName = request.getParameter("state");
 				Long regId = Long.parseLong(request.getParameter("regId"));
-				List<Orphanage> orphanage = GetAllDetails.fetchAddedOrphanageState(stateName, regId);
+				List<Orphanage> orphanage = FetchContent.fetchAddedOrphanageState(stateName, regId);
 				out.write(new Gson().toJson(orphanage));
 			} catch (Exception e) {
 				e.printStackTrace();

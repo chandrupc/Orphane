@@ -16,27 +16,27 @@ public class OrphanagePost {
 	@GeneratedValue(generator = "orp_post_id_gen", strategy = GenerationType.TABLE)
 	@TableGenerator(name = "orp_post_id_gen", allocationSize = 1, initialValue = 100, pkColumnName = "orp_post_id", pkColumnValue = "curr_id", table = "orp_post_id_generator", valueColumnName = "next_id")
 	@Column(name = "post_id")
-	private Integer postId;
+	private Long postId;
 
 	@Column(name = "orp_id", nullable = false)
-	private Integer orpId;
+	private Long orpId;
 
 	@Column(name = "post_content", nullable = false)
 	private String post;
 
-	public Integer getPostId() {
+	public Long getPostId() {
 		return postId;
 	}
 
-	public void setPostId(Integer postId) {
+	public void setPostId(Long postId) {
 		this.postId = postId;
 	}
 
-	public Integer getOrpId() {
+	public Long getOrpId() {
 		return orpId;
 	}
 
-	public void setOrpId(Integer orpId) {
+	public void setOrpId(Long orpId) {
 		this.orpId = orpId;
 	}
 
