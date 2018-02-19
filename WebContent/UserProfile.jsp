@@ -68,9 +68,9 @@
 	<div class="container-fluid">
 		<div class="row bg-dark" style="height: 90px">
 			<div class="col-12 col-sm-4 col-md-4 align-self-center">
-				<img id="prophoto" onclick="photoChoose()" class="profilephoto"
-					src="images/sample.png" alt="Photo"> <strong
-					style="color: white"><%=firstName + " " + lastName%></strong>
+				<img id="prophoto" onclick="regularJsp()" onclick="photoChoose()"
+					class="profilephoto" src="images/sample.png" alt="Photo"> <strong
+					style="color: white; cursor: pointer" onclick="regularJsp()"><%=firstName + " " + lastName%></strong>
 			</div>
 
 			<div class="col-12 col-sm-8 col-md-8  align-self-center"
@@ -146,7 +146,7 @@
 				<label for="inputAddress">Address</label>
 				<textarea class="form-control" id="inputAddress"
 					onfocus="clearError('address-error')"
-					onkeyup="addressLength('inputAddress','address-error')"
+					onkeyup="addressLength('inputAddress','address-error,1')"
 					placeholder="Address" disabled="true"><%=address%></textarea>
 				<span id="address-error"></span>
 			</div>

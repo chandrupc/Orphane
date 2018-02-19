@@ -6,8 +6,11 @@ import javax.persistence.Query;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.orphane.model.Orphanage;
+import org.orphane.model.OrphanagePost;
+import org.orphane.model.RegularUserOrphanages;
 import org.orphane.model.RegularUsers;
 import org.orphane.util.HBUtil;
 
@@ -108,7 +111,7 @@ public class FetchContent {
 			Session ses = HBUtil.getSessionFactory().openSession();
 			ses.beginTransaction();
 			Query query = ses.createQuery(
-					"select o.id,o.name,o.address.state,o.credential.email from Orphanage o where address.state = :state_name and credential.status = 'ACTIVATED' and id not in (select orpId from RegularUserOrphanages)");
+					"select o.id,o.name,o.address.state,o.phoneNumber from Orphanage o where address.state = :state_name and credential.status = 'ACTIVATED' and id not in (select orpId from RegularUserOrphanages)");
 			query.setParameter("state_name", stateName);
 			orphanages = query.getResultList();
 			ses.getTransaction().commit();
@@ -128,7 +131,7 @@ public class FetchContent {
 			Session ses = HBUtil.getSessionFactory().openSession();
 			ses.beginTransaction();
 			Query query = ses.createQuery(
-					"select o.id,o.name,o.address.state,o.credential.email from Orphanage o where address.state = :state_name and credential.status = 'ACTIVATED' and id in (select orpId from RegularUserOrphanages where regId = :regularId)");
+					"select o.id,o.name,o.address.state,o.phoneNumber from Orphanage o where address.state = :state_name and credential.status = 'ACTIVATED' and id in (select orpId from RegularUserOrphanages where regId = :regularId)");
 			query.setParameter("state_name", stateName);
 			query.setParameter("regularId", regularId);
 			orphanages = query.getResultList();
@@ -161,4 +164,77 @@ public class FetchContent {
 		return orpUser;
 	}
 
+	/*--------------------------------------------TO GET ORPHANAGE NAME BY ITS ID--------------------------------*/
+	@SuppressWarnings("deprecation")
+	public static String getOrphanageNameById(Long orpId) {
+		String orpName = null;
+		Orphanage orp = null;
+		try {
+			System.out.println(orpId);
+			Session ses = HBUtil.getSessionFactory().openSession();
+			ses.beginTransaction();
+			Criteria criteria = ses.createCriteria(Orphanage.class);
+			criteria.add(Restrictions.eq("id", orpId));
+			orp = (Orphanage) criteria.uniqueResult();
+			orpName = orp.getName();
+			ses.getTransaction().commit();
+			ses.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return orpName;
+	}
+
+	/*--------------------------------------------TO SHOW NOTIFICATION--------------------------------*/
+
+	@SuppressWarnings("unchecked")
+	public static String showNotifcations(String email) {
+		String notifications = "";
+		Long userId = null;
+		Long orpId = null;
+		String orpName = null;
+		System.out.println(email);
+		try {
+			SessionFactory sf = HBUtil.getSessionFactory();
+			Session ses = sf.openSession();
+			ses.beginTransaction();
+			RegularUsers user = FetchContent.getRegUserDetails(email);
+			// System.out.println(user);
+			userId = user.getId();
+			// System.out.println(userId);
+			Query query = ses.createQuery("FROM RegularUserOrphanages WHERE regId =:id");
+			query.setParameter("id", userId);
+			List<RegularUserOrphanages> results = query.getResultList();
+			// System.out.println(results);
+			if (results == null || results.size() == 0) {
+				System.out.println("not orp");
+				notifications = "NO ORPHANAGES ADDED YET";
+			} else {
+				Query query1 = ses.createQuery(
+						"FROM OrphanagePost WHERE orpId in (SELECT orpId FROM RegularUserOrphanages where regId =:userid) ORDER BY postDate desc");
+				query1.setParameter("userid", userId);
+				List<OrphanagePost> orpPost = query1.getResultList();
+				// System.out.println(orpPost);
+				if (orpPost == null || orpPost.size() == 0) {
+					notifications = "NO NOTIFICATIONS";
+					System.out.println(notifications);
+				} else {
+					for (OrphanagePost each : orpPost) {
+						orpId = each.getOrpId();
+						orpName = FetchContent.getOrphanageNameById(orpId);
+						notifications += "{\"Name\":\"" + orpName + "\",\"Post\":\"" + each.getPost() + "\",\"Date\":\""
+								+ each.getPostDate() + "\",\"Time\":\"" + each.getPostTime() + "\"},";
+					}
+					notifications = "[" + (notifications.substring(0, notifications.length() - 1)) + "]";
+
+				}
+
+			}
+			ses.getTransaction().commit();
+			ses.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return notifications;
+	}
 }

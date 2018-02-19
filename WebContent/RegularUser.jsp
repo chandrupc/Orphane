@@ -12,6 +12,7 @@
 	RegularUsers reg = null;
 	String fname = "";
 	String lname = "";
+	String notification = "";
 	if (user == null) {
 		request.getRequestDispatcher("login.html").forward(request, response);
 	} else if (user != null) {
@@ -21,6 +22,7 @@
 		reg = FetchContent.getRegUserDetails(user.getEmail());
 		lname = reg.getLastName();
 		fname = reg.getName();
+		notification = "onclick=\"loadNotifications('" + user.getEmail() + "')\"";
 	}
 %>
 
@@ -41,6 +43,7 @@
 
 <!-- Custom styles for this template -->
 <link href="css/user.css" rel="stylesheet">
+<link href="css/notification.css" rel="stylesheet">
 <script type="text/javascript" src="main.js"></script>
 <script type="text/javascript" src="jscript/link1.js"></script>
 <script type="text/javascript" src="jscript/link2.js"></script>
@@ -62,8 +65,10 @@
 	<div class="container-fluid">
 		<div class="row bg-dark" style="height: 90px;">
 			<div class="col-12 col-sm-4 col-md-4 align-self-center">
-				<a href="#"> <img class="profilephoto" src="images/sample.png"
-					alt="Photo" /></a> <strong id="username" style="color: white"><%=fname + "  " + lname%></strong>
+				<a href="#" onclick="regularJsp()"> <img class="profilephoto"
+					src="images/sample.png" alt="Photo" /></a> <strong
+					onclick="regularJsp()" id="username"
+					style="color: white; cursor: pointer"><%=fname + "  " + lname%></strong>
 			</div>
 			<div class="col-12 col-sm-8 col-md-8  align-self-center"
 				style="color: white">
@@ -72,6 +77,8 @@
 						class="nav-link active">Show Orphanage</a></li>
 					<li class="nav-item"><a href="UserProfile.jsp"
 						class="nav-link active">Profile</a></li>
+					<li class="nav-item"><a href="#" <%=notification%>
+						class="nav-link active">Notifications</a></li>
 					<li class="nav-item"><a class="nav-link" href="logout
 					">Logout</a></li>
 				</ul>
@@ -79,7 +86,7 @@
 		</div>
 	</div>
 
-	<div id="home">
+	<div id="home" class="container">
 		<div id="shad1" class="container dotted shad" style="margin: 20px;">
 			<div class="row">
 				<div class="col">

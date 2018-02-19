@@ -115,5 +115,4 @@ public class RegularSignUp extends HttpServlet {
 		}
 
 	}
-
 }

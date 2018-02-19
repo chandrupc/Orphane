@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.orphane.services.DeleteService;
+import org.orphane.services.CredentialService;
 import org.orphane.util.CKUtil;
 
 @WebServlet("/delete-reg-profile")
@@ -32,7 +32,7 @@ public class DeleteRegularProfile extends HttpServlet {
 				String email = request.getParameter("email");
 				// System.out.println(email); &&
 
-				if (DeleteService.deleteRegularUserProfile(email)) {
+				if (CredentialService.deleteAccount(email)) {
 					CKUtil.deleteCookie(request, response);
 					out.write("success");
 				} else {

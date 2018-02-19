@@ -1,7 +1,9 @@
 package org.orphane.services;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.orphane.model.Credential;
 import org.orphane.modelenum.UserStatus;
 import org.orphane.modelenum.UserType;
@@ -168,4 +170,31 @@ public class CredentialService {
 		}
 		return user;
 	}
+
+	/*---------------------------------DELETE ACCOUNT(SET AS NOT ACTIVATED)-------------------------*/
+
+	public static boolean deleteAccount(String email) {
+		boolean status = false;
+		try {
+			SessionFactory sf = HBUtil.getSessionFactory();
+			Session ses = sf.openSession();
+			ses.beginTransaction();
+			@SuppressWarnings("deprecation")
+			Criteria criteria = ses.createCriteria(Credential.class);
+			criteria.add(Restrictions.eq("email", email));
+			Credential credential = (Credential) criteria.uniqueResult();
+			System.out.println(credential);
+			if (credential != null) {
+				credential.setStatus(UserStatus.NOT_ACTIVATED);
+				ses.update(credential);
+				status = true;
+			}
+			ses.getTransaction().commit();
+			ses.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
+	}
+
 }

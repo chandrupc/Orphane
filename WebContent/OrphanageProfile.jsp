@@ -67,9 +67,9 @@
 	<div class="container-fluid">
 		<div class="row bg-dark" style="height: 90px">
 			<div class="col-12 col-sm-4 col-md-4 align-self-center">
-				<img id="prophoto" onclick="photoChoose()" class="profilephoto"
+				<img id="prophoto" onclick="orphanageJsp()" class="profilephoto"
 					src="images/sample.png" alt="Photo"> <strong
-					style="color: white"><%=orphanageName%></strong>
+					style="color: white; cursor: pointer" onclick="orphanageJsp()"><%=orphanageName%></strong>
 			</div>
 
 			<div class="col-12 col-sm-8 col-md-8  align-self-center"
@@ -142,7 +142,7 @@
 				<label for="inputOrpAddress">Address</label>
 				<textarea class="form-control" id="inputOrpAddress"
 					onfocus="clearError('address-error')"
-					onkeyup="addressLength('inputAddress','address-error')"
+					onkeyup="addressLength('inputAddress','address-error,1')"
 					placeholder="Address" disabled="true"><%=address%></textarea>
 				<span id="address-error"></span>
 			</div>

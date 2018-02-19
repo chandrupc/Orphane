@@ -3,7 +3,8 @@
 var userError = [ "Enter a valid email-id", "Enter a valid first-name",
 		"Enter a valid last-name",
 		"Email-id doesnot exists please sign up to login",
-		"Account not activated", "Enter a valid orphanage name" ];
+		"Account not activated/Requested account is deleted",
+		"Enter a valid orphanage name" ];
 var passError = [ "Password cannot be empty", "Please enter the password",
 		"Password mismatch", "Minimum 8 characters",
 		"New and Confirm Password mismatch", "Current Password mismatch",
@@ -670,12 +671,12 @@ function lastNameLength(idName, errorTag) {
 	}
 }
 
-function addressLength(idName, errorTag) {
+function addressLength(idName, errorTag, index) {
 	var x = getValue(idName);
 	if (x.length > 255) {
 		x = x.slice(0, x.length - 1);
 		document.getElementById(idName).value = x;
-		dispError(errorTag, lengthError, 1);
+		dispError(errorTag, lengthError, index);
 	} else {
 		document.getElementById(errorTag).innerHTML = '';
 	}
@@ -880,6 +881,9 @@ function fetchByStateInOrp(anchor) {
 						+ "<td id='state'>"
 						+ arr[i - 1][2]
 						+ "</td>"
+						+ "<td id='number'>"
+						+ arr[i - 1][3]
+						+ "</td>"
 						+ "<td onclick='deleteOrphanage("
 						+ '"'
 						+ arr[i - 1][0]
@@ -923,6 +927,9 @@ function fetchByState(anchor) {
 						+ "</td>"
 						+ "<td id='state'>"
 						+ arr[i - 1][2]
+						+ "</td>"
+						+ "<td id='number'>"
+						+ arr[i - 1][3]
 						+ "</td>"
 						+ "<td onclick='addOrphanage("
 						+ '"'
@@ -1011,7 +1018,7 @@ function deleteAccount(email) {
 				if (this.responseText === "success") {
 					location.href = "index.html";
 				} else if (this.responseText === "error") {
-					alert("Server error occured\n Please try after some times");
+					alert("Account doesn't exists/server error try again later");
 				}
 			}
 		}
@@ -1038,7 +1045,7 @@ function deleteOrpAccount(email) {
 				if (this.responseText === "success") {
 					location.href = "index.html";
 				} else if (this.responseText === "error") {
-					alert("Server error occured\n Please try after some times");
+					alert("Account doesn't exists/server error try again later");
 				}
 			}
 		}
@@ -1438,4 +1445,155 @@ function deleteEvent(id) {
 		}
 	}
 	ajax.send("id=" + id);
+}
+
+/*------------------------------------VIEWING ORPHANAGE POSTS--------------------------------*/
+
+function posts(email) {
+	var ajax;
+	var temp = "";
+	var post;
+	console.log(email);
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("post", "viewpost", true);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			if (this.responseText === "NO POSTS") {
+				console.log(this.responeText);
+				temp = "<div class='row'><div class='col posttext text-center'>No Posts.</div></div>"
+						+ "<div class='text-center' style='padding-top:150px'><button onclick='orphanageJsp()' class='btn btn-success'>Post a need</button></div>";
+				console.log(temp)
+			} else {
+				posts = JSON.parse(this.responseText);
+				for (i in posts) {
+					temp += "<div class='row'><div class='col posttext'>"
+							+ posts[i].post
+							+ "</div><div class='col text-end datestyle'><p style='color:#adad85'>Posted on : <p style='color: #00cc44;'>"
+							+ posts[i].postDate + " " + posts[i].postTime
+							+ "</p></p></div><hr></div>";
+				}
+				console.log(temp);
+			}
+			temp = "<div class='row'><div class='col posttext text-center'><h4>POSTS</h4></div></div>"
+					+ temp;
+			document.getElementById("orphome").innerHTML = temp;
+		}
+	}
+	ajax.send("email=" + email);
+}
+
+/*-------------------------------ORPHANAGE POST-------------------------------*/
+
+function postOrphanage(email) {
+	var text = document.getElementById("postArea").value;
+	var correctedText = text.replace(/(\r\n|\n|\r)/gm, "");
+	console.log(text + email);
+	console.log(correctedText);
+	if (text === "") {
+		dispError("post-error", post, 0);
+	} else {
+		var ajax, parameter;
+		if (XMLHttpRequest) {
+			ajax = new XMLHttpRequest();
+		} else {
+			ajax = new ActiveXobject("Microsoft.XHTTP");
+		}
+		ajax.open("post", "orphanagepost", true);
+		ajax.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		parameter = "email=" + email + "&postContent=" + correctedText;
+		ajax.onreadystatechange = function() {
+			if (this.readyState === 4 && this.status === 200) {
+				console.log(this.responseText);
+				if (this.responseText === "SUCCESS") {
+					document.getElementById("postArea").value = "";
+					alert("Successfully Posted");
+
+				} else {
+					alert("Unable to post. Try after sometime.")
+				}
+			}
+		}
+		ajax.send(parameter);
+	}
+}
+
+/*-------------------REGULAR USER SHOW NOTIFICATIONS---------------------------------*/
+
+function loadNotifications(email) {
+	var ajax;
+	var temp = "";
+	console.log(email);
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("post", "notification", true);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			if (this.responseText === "NO ORPHANAGES ADDED YET") {
+				temp = "<div class='row'><div class='col align-self-center othermsg'>No Orphanages Added To Show Notifications</div></div><div class='row justify-content-center'><div class='col text-center'><a class='addbutton' onclick='changePage()'>Add Orphanages</a></div></div>";
+			} else if (this.responseText === "NO NOTIFICATIONS") {
+				temp = "<div class='row'><div class='col align-self-center othermsg'>No Notifications.</div></div>";
+			} else {
+				var notifications = JSON.parse(this.responseText);
+				for ( var i in notifications) {
+					temp += "<div class='row'><div class='col-8 align-self-start'><h4 class='topic'>"
+							+ notifications[i].Name
+							+ "</h4></div><div class='col-4 text-end datestyle'><p style='color:#adad85;display:inline'>Posted on : <span style='color: #00cc44;'>"
+							+ notifications[i].Date
+							+ " "
+							+ notifications[i].Time
+							+ "</span></p></div></div><div class='row endofnotification'><div class='col posttext'>"
+							+ notifications[i].Post + "<hr></div></div>";
+				}
+			}
+			console.log(temp);
+			document.getElementById("home").innerHTML = temp;
+		}
+	}
+	ajax.send("email=" + email);
+}
+
+/*-------------------BACK CHANGE REGULAR USER JSP PAGE--------------------------*/
+
+function regularJsp() {
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("get", "RegularUser.jsp", true);
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			location.href = "RegularUser.jsp";
+		}
+	}
+	ajax.send();
+}
+
+/*-------------------BACK CHANGE REGULAR USER JSP PAGE--------------------------*/
+
+function orphanageJsp() {
+	var ajax;
+	if (XMLHttpRequest) {
+		ajax = new XMLHttpRequest();
+	} else {
+		ajax = new ActiveXobject("Microsoft.XMLHTTP");
+	}
+	ajax.open("get", "orphanage.jsp", true);
+	ajax.onreadystatechange = function() {
+		if (this.readyState === 4 && this.status === 200) {
+			location.href = "orphanage.jsp";
+		}
+	}
+	ajax.send();
 }

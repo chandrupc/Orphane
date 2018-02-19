@@ -1,0 +1,48 @@
+@CHARSET "ISO-8859-1";
+.topic {
+	padding:5px;
+	 font-family: 'Exo', sans-serif;
+}
+
+.posttext {
+	padding:5px;
+	text-indent: 50px;
+	font-size: 14px;
+}
+
+.datestyle {
+	padding:10px;
+	text-align: right!important;
+	text-shadow: 1px 1px 2px;
+}
+
+.othermsg {
+	font-size: 22px;
+	text-align: center!important;
+	font-weight: 500%;
+	padding: 50px;
+}
+
+.addbutton {
+	padding : 15px;
+	color: white !important;
+	font-weight: 600;
+	text-decoration-line: none !important;
+	border-radius: 2px;
+	background-color: #00cc00;
+	cursor:pointer;
+}
+.addbutton:hover {
+	background-color: #00ff00;
+	color: white!important;
+	cursor : pointer;
+	
+}
+
+.endofnotification {
+	border-top-width: 0px;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 2px!important;
+	border-bottom-color: black!important;
+}

@@ -78,6 +78,7 @@
 				<th scope="col">S.No</th>
 				<th scope="col">Orphanage Name</th>
 				<th>State</th>
+				<th>Phone Number</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -90,6 +91,7 @@
 				<th scope="row"><%=i%></th>
 				<td id="name"><%=each.getName()%></td>
 				<td id="state"><%=each.getAddress().state%></td>
+				<td id="number"><%=each.getPhoneNumber()%></td>
 				<td onclick='deleteOrphanage("<%=each.getId()%>")'
 					class="float-right"><button class="btn btn-danger">Unfollow</button></td>
 			</tr>

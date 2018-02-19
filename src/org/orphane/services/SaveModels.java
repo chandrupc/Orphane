@@ -1,11 +1,14 @@
 package org.orphane.services;
 
+import java.util.Date;
+
 import org.hibernate.Session;
 import org.orphane.model.CardDetails;
 import org.orphane.model.Events;
 import org.orphane.model.FileDetails;
 import org.orphane.model.NotifyUsers;
 import org.orphane.model.Orphanage;
+import org.orphane.model.OrphanagePost;
 import org.orphane.model.RegularUserOrphanages;
 import org.orphane.model.RegularUsers;
 import org.orphane.model.Trustee;
@@ -107,5 +110,28 @@ public class SaveModels {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/*-----------------SAVING ORPHANAGE POST-----------------------------*/
+	public static String addPost(String email, String text) {
+		String status = "errorOccured";
+		try {
+			Orphanage orphanage = FetchContent.getOrphanageDetails(email);
+			Long orpId = orphanage.getId();
+			OrphanagePost post = new OrphanagePost();
+			post.setOrpId(orpId);
+			post.setPost(text);
+			post.setPostDate(new Date());
+			post.setPostTime(new Date());
+			Session session = HBUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+			session.save(post);
+			session.getTransaction().commit();
+			session.close();
+			status = "success";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
 	}
 }

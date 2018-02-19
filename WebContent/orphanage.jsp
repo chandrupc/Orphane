@@ -24,6 +24,7 @@
 <!-- Custom styles for this template -->
 <link href="css/orphanage.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="css/Orpprofile.css">
+<link rel="stylesheet" type="text/css" href="css/notification.css">
 <script type="text/javascript" src="main.js"></script>
 <script type="text/javascript" src="jscript/link1.js"></script>
 <script type="text/javascript" src="jscript/link2.js"></script>
@@ -38,6 +39,9 @@
 <%
 	Credential user = CKUtil.fetchDetails(request);
 	Orphanage orp = null;
+	String email = null;
+	String post = null;
+	String click = null;
 	if (user == null) {
 		request.getRequestDispatcher("login.html").forward(request, response);
 	} else {
@@ -45,8 +49,11 @@
 			System.out.println("Success");
 			request.getRequestDispatcher("RegularUser.jsp").forward(request, response);
 		} else {
+			email = user.getEmail();
 			orp = FetchContent.getOrphanageDetails(user.getEmail());
+			click = "onclick=\"postOrphanage('" + email + "')\"";
 			System.out.println(orp);
+			post = "onclick=\"posts('" + email + "')\"";
 		}
 	}
 %>
@@ -54,14 +61,17 @@
 	<div class="container-fluid">
 		<div class="row bg-dark" style="height: 90px">
 			<div class="col-12 col-sm-4 col-md-4 align-self-center">
-				<a href="#"><img class="profilephoto" src="images/sample.png"
-					alt="Photo"></a> <strong style="color: white"><%=orp.getName()%></strong>
+				<a href="#" onclick="orphanageJsp()"><img class="profilephoto"
+					src="images/sample.png" alt="Photo"></a> <strong
+					style="color: white;cursor:pointer" onclick="orphanageJsp()"><%=orp.getName()%></strong>
 			</div>
 			<div class="col-12 col-sm-8 col-md-8  align-self-center"
 				style="color: white">
 				<ul class="nav justify-content-end">
 					<!-- <li class="nav-item"><a class="nav-link active"
 						href="Trustee.html">Trustee</a></li> -->
+					<li class="nav-item"><a class="nav-link active" href="#"
+						<%=post%>>Your Post</a></li>
 					<li class="nav-item"><a class="nav-link active"
 						href="OrphanageProfile.jsp">Profile</a></li>
 					<li class="nav-item"><a class="nav-link" href="logout">Logout</a></li>
@@ -69,12 +79,11 @@
 			</div>
 		</div>
 	</div>
-	<div class="container form-group">
+	<div id="orphome" class="container form-group">
 		<div id="heading">POST YOUR NEEDS</div>
-		<textarea class="form-control" id="exampleFormControlTextarea1"
-			rows="5"></textarea>
+		<textarea class="form-control" id="postArea" rows="5"></textarea>
 		<div class="center">
-			<button type="button" class="btn btn-success btn-lg">Success</button>
+			<button type="button" class="btn btn-success btn-lg" <%=click%>>POST</button>
 		</div>
 	</div>
 

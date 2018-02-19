@@ -108,7 +108,7 @@ public class GetAllDetails {
 			Session ses = HBUtil.getSessionFactory().openSession();
 			ses.beginTransaction();
 			Query query = ses.createQuery(
-					"select address.state from Orphanage where orp_id not in (select orpId from RegularUserOrphanages where regId = :regId)");
+					"select distinct address.state from Orphanage where credential.status='ACTIVATED' and orp_id not in (select orpId from RegularUserOrphanages where regId = :regId)");
 			query.setParameter("regId", id);
 			orphanages = query.getResultList();
 			ses.getTransaction().commit();
@@ -126,7 +126,7 @@ public class GetAllDetails {
 			Session ses = HBUtil.getSessionFactory().openSession();
 			ses.beginTransaction();
 			Query query = ses.createQuery(
-					"select address.state from Orphanage where orp_id in (select orpId from RegularUserOrphanages where regId = :regId)");
+					"select distinct address.state from Orphanage where orp_id in (select orpId from RegularUserOrphanages where regId = :regId)");
 			query.setParameter("regId", regId);
 			orphanages = query.getResultList();
 			ses.getTransaction().commit();
